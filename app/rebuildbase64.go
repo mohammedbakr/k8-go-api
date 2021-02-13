@@ -36,7 +36,8 @@ func rebuildbase64(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var buf []byte
+	// there some err variable shadowing
+	//var buf []byte
 	var mp map[string]json.RawMessage
 
 	err = json.Unmarshal(cont, &mp)
@@ -56,10 +57,11 @@ func rebuildbase64(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	buf, err = base64.StdEncoding.DecodeString(str)
+	buf, err := base64.StdEncoding.DecodeString(str)
 	if err != nil {
 		log.Println("error:", err)
 		http.Error(w, "malformed base64 encoding", http.StatusBadRequest)
+		return
 
 	}
 

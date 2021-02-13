@@ -19,13 +19,15 @@ func rebuildfile(w http.ResponseWriter, r *http.Request) {
 	//m max 5 MB file name we can change ut
 	r.ParseMultipartForm(5 << 20)
 
-	cont := r.FormValue("contentManagementFlagJson")
+	log.Println(r.PostFormValue("contentManagementFlagJson"))
+
+	cont := r.PostFormValue("contentManagementFlagJson")
 
 	var mp map[string]json.RawMessage
 
-	errj := json.Unmarshal([]byte(cont), &mp)
-	if errj != nil {
-		log.Println("error json:", errj)
+	err := json.Unmarshal([]byte(cont), &mp)
+	if err != nil {
+		log.Println("error json:", err)
 		http.Error(w, "malformed json", http.StatusBadRequest)
 		return
 	}
@@ -42,21 +44,15 @@ func rebuildfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//this only to parse post form to extract data for log
-	if errp := r.ParseForm(); errp != nil {
-		log.Println(err)
-	}
-	for k, v := range r.Form {
-		log.Printf("Form[%q] = %q\n", k, v)
-	}
 
 	log.Printf("%v\n", handler.Filename)
 	log.Printf("%v\n", handler.Size)
 
 	defer file.Close()
 
-	buf, er := ioutil.ReadAll(file)
-	if er != nil {
-		log.Println(er)
+	buf, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Println(err)
 		return
 	}
 	log.Printf("%v\n", handler.Header.Get("Content-Type"))

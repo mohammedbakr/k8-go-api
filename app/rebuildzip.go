@@ -32,16 +32,16 @@ func rebuildzip(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(5 << 20)
 
 	//myfileparam is the name of file in post request body
-	log.Println("json form ", r.MultipartForm.Value["contentManagementFlagJson"])
-	log.Println(r.FormValue("contentManagementFlagJson"))
 
-	cont := r.FormValue("contentManagementFlagJson")
+	log.Println(r.PostFormValue("contentManagementFlagJson"))
+
+	cont := r.PostFormValue("contentManagementFlagJson")
 
 	var mp map[string]json.RawMessage
 
-	errj := json.Unmarshal([]byte(cont), &mp)
-	if errj != nil {
-		log.Println("error json:", errj)
+	err := json.Unmarshal([]byte(cont), &mp)
+	if err != nil {
+		log.Println("error json:", err)
 		http.Error(w, "malformed json", http.StatusBadRequest)
 
 		return
@@ -58,7 +58,19 @@ func rebuildzip(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if handler.Header.Get("Content-Type") != "application/zip" {
+	defer file.Close()
+
+	buf, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "server intenal error", http.StatusInternalServerError)
+
+		return
+	}
+
+	if handler.Header.Get("Content-Type") != "application/zip" || http.DetectContentType(buf) != "application/zip" {
+		log.Println(w, "mediatype is", handler.Header.Get("Content-Type"))
+
 		http.Error(w, "upload file should be zip file format", http.StatusUnsupportedMediaType)
 
 		return
@@ -76,14 +88,6 @@ func rebuildzip(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("%v\n", handler.Filename)
 	log.Printf("%v\n", handler.Size)
-
-	defer file.Close()
-
-	buf, er := ioutil.ReadAll(file)
-	if er != nil {
-		log.Println(er)
-		return
-	}
 
 	log.Printf("%v\n", handler.Header.Get("Content-Type"))
 	log.Printf("%v\n", http.DetectContentType(buf))
