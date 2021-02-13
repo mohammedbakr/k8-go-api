@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,16 +14,30 @@ func rebuildfile(w http.ResponseWriter, r *http.Request) {
 	log.Printf("%v\n", r.URL)
 	log.Printf("%v\n", r.RemoteAddr)
 	log.Printf("%v\n", r.Host)
-	log.Printf("%v\n", r.Header)
+	log.Printf("%v\n", r.Header.Get("Content-Type"))
 
 	//m max 5 MB file name we can change ut
 	r.ParseMultipartForm(5 << 20)
+
+	cont := r.FormValue("contentManagementFlagJson")
+
+	var mp map[string]json.RawMessage
+
+	errj := json.Unmarshal([]byte(cont), &mp)
+	if errj != nil {
+		log.Println("error json:", errj)
+		http.Error(w, "malformed json", http.StatusBadRequest)
+		return
+	}
+	log.Println("json request", mp)
 
 	//myfileparam is the name of file in post request body
 	file, handler, err := r.FormFile("file")
 
 	if err != nil {
-		log.Println(err)
+		log.Println("file not found", err)
+		http.Error(w, "file not found", http.StatusBadRequest)
+
 		return
 	}
 

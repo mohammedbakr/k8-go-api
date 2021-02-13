@@ -30,7 +30,9 @@ func rebuildbase64(w http.ResponseWriter, r *http.Request) {
 
 	cont, err := ioutil.ReadAll(base64enc)
 	if err != nil {
-		log.Println("error base64enc:", err)
+		log.Println("error:", err)
+		http.Error(w, "malformed request", http.StatusBadRequest)
+
 		return
 	}
 
@@ -40,6 +42,8 @@ func rebuildbase64(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(cont, &mp)
 	if err != nil {
 		log.Println("error:", err)
+		http.Error(w, "malformed json request", http.StatusBadRequest)
+
 		return
 	}
 
@@ -47,12 +51,16 @@ func rebuildbase64(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(mp["Base64"], &str)
 	if err != nil {
 		log.Println("error:", err)
+		http.Error(w, "malformed json request", http.StatusBadRequest)
+
 		return
 	}
 
 	buf, err = base64.StdEncoding.DecodeString(str)
 	if err != nil {
-		log.Fatal("error:", err)
+		log.Println("error:", err)
+		http.Error(w, "malformed base64 encoding", http.StatusBadRequest)
+
 	}
 
 	log.Printf("%v\n", r.Header.Get("Content-Type"))

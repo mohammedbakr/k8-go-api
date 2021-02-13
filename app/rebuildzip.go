@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
@@ -25,6 +26,7 @@ func rebuildzip(w http.ResponseWriter, r *http.Request) {
 	log.Printf("%v\n", r.RemoteAddr)
 	log.Printf("%v\n", r.Host)
 	log.Printf("%v\n", r.Header)
+	log.Printf("%v\n", r.Header.Get("Content-Type"))
 
 	//m max 5 MB file name we can change ut
 	r.ParseMultipartForm(5 << 20)
@@ -33,17 +35,41 @@ func rebuildzip(w http.ResponseWriter, r *http.Request) {
 	log.Println("json form ", r.MultipartForm.Value["contentManagementFlagJson"])
 	log.Println(r.FormValue("contentManagementFlagJson"))
 
+	cont := r.FormValue("contentManagementFlagJson")
+
+	var mp map[string]json.RawMessage
+
+	errj := json.Unmarshal([]byte(cont), &mp)
+	if errj != nil {
+		log.Println("error json:", errj)
+		http.Error(w, "malformed json", http.StatusBadRequest)
+
+		return
+	}
+
+	log.Println("json request", mp)
+
 	file, handler, err := r.FormFile("file")
 
 	if err != nil {
 		log.Println("file not found", err)
+		http.Error(w, "file not found", http.StatusBadRequest)
+
 		return
+	}
+
+	if handler.Header.Get("Content-Type") != "application/zip" {
+		http.Error(w, "upload file should be zip file format", http.StatusUnsupportedMediaType)
+
+		return
+
 	}
 
 	//this only to parse post form to extract data for log
 	if errp := r.ParseForm(); errp != nil {
 		log.Println(err)
 	}
+
 	for k, v := range r.Form {
 		log.Printf("Form[%q] = %q\n", k, v)
 	}

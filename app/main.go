@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -39,29 +40,40 @@ func addgwheader(w http.ResponseWriter, v gwcustomheader) {
 
 //there will middleware chain here
 func customMiddleware(next http.Handler) http.Handler {
+	errauth := "you d'ont have valid authoriaztion token"
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		//Authorization: Bearer
-
-		authheader := r.Header.Get("Authorization")
-		log.Println(authheader)
-
-		//this ugly comparison will be changed soon
-		if authheader != "Bearer mysecrettoken" {
-
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("you d'ont have valid authoriaztion token"))
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" {
+			http.Error(w, errauth, http.StatusUnauthorized)
 
 			return
-
 		}
 
+		authHeaderParts := strings.Fields(authHeader)
+
+		if len(authHeaderParts) != 2 || authHeaderParts[0] != "Bearer" {
+			http.Error(w, errauth, http.StatusUnauthorized)
+
+			return
+		}
+
+		if authHeaderParts[1] != "mysecrettoken" {
+
+			http.Error(w, errauth, http.StatusUnauthorized)
+
+			return
+		}
+
+		// some logs
 		log.Println(r.RequestURI)
 		log.Println("inside middleware")
 
 		next.ServeHTTP(w, r)
 	})
 }
+
 func main() {
 	mx := mux.NewRouter()
 	mx.Use(customMiddleware)
