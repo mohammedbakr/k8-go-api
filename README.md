@@ -13,7 +13,7 @@ go build
 
 The server will start at:
 
-- Local: http://localhost:8080
+- Local: http://localhost:8000
 
 ## End points:
 
