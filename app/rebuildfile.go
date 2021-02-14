@@ -9,17 +9,10 @@ import (
 
 func rebuildfile(w http.ResponseWriter, r *http.Request) {
 
-	//log about request
-	log.Println("method:", r.Method)
-	log.Printf("%v\n", r.URL)
-	log.Printf("%v\n", r.RemoteAddr)
-	log.Printf("%v\n", r.Host)
-	log.Printf("%v\n", r.Header.Get("Content-Type"))
-
 	//m max 5 MB file name we can change ut
 	r.ParseMultipartForm(5 << 20)
 
-	log.Println(r.PostFormValue("contentManagementFlagJson"))
+	log.Printf("json payload : %v\n", r.PostFormValue("contentManagementFlagJson"))
 
 	cont := r.PostFormValue("contentManagementFlagJson")
 
@@ -27,55 +20,42 @@ func rebuildfile(w http.ResponseWriter, r *http.Request) {
 
 	err := json.Unmarshal([]byte(cont), &mp)
 	if err != nil {
-		log.Println("error json:", err)
-		http.Error(w, "malformed json", http.StatusBadRequest)
+		log.Println("unmarshal json:", err)
+		http.Error(w, "malformed json format", http.StatusBadRequest)
 		return
 	}
-	log.Println("json request", mp)
 
-	//myfileparam is the name of file in post request body
 	file, handler, err := r.FormFile("file")
 
 	if err != nil {
-		log.Println("file not found", err)
-		http.Error(w, "file not found", http.StatusBadRequest)
+		log.Println("formfile", err)
+		http.Error(w, "file not found or wrong form field  name", http.StatusBadRequest)
 
 		return
 	}
-
-	//this only to parse post form to extract data for log
-
-	log.Printf("%v\n", handler.Filename)
-	log.Printf("%v\n", handler.Size)
 
 	defer file.Close()
 
 	buf, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Println(err)
+		log.Println("ioutilReadAll", err)
+		http.Error(w, "file not found", http.StatusBadRequest)
 		return
 	}
-	log.Printf("%v\n", handler.Header.Get("Content-Type"))
-	log.Printf("%v\n", http.DetectContentType(buf))
 
+	//uploaded file log info
+	log.Printf("Filename: %v\n", handler.Filename)
+	log.Printf("File size: %v\n", handler.Size)
+	log.Printf("Content-Type: %v\n", handler.Header.Get("Content-Type"))
+	log.Printf("Content-Type: %v\n", http.DetectContentType(buf))
+
+	//glaswall custom header
 	addgwheader(w, temp)
-	s, e := w.Write(buf)
+
+	_, e := w.Write(buf)
 	if e != nil {
 		log.Println(e)
 		return
 	}
-	log.Println(s)
-
-	// so  here we can use either open file or  ioutil.write file
-	/*
-		fmt.Fprintf(w, "%v\n", handler.Header)
-		f, err := os.OpenFile(handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		defer f.Close()
-		io.Copy(f, file)
-	*/
 
 }

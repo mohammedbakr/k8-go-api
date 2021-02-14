@@ -10,19 +10,8 @@ import (
 
 func rebuildbase64(w http.ResponseWriter, r *http.Request) {
 
-	//log about request
-	log.Println("method:", r.Method)
-	log.Printf("%v\n", r.URL)
-	log.Printf("%v\n", r.RemoteAddr)
-	log.Printf("%v\n", r.Host)
-	log.Printf("%v\n", r.Header)
-
 	//m max 5 MB file name we can change ut
 	r.ParseMultipartForm(5 << 20)
-
-	//myfileparam is the name of file in post request body
-
-	log.Printf("%v\n", r.Header.Get("Content-Type"))
 
 	base64enc := r.Body
 
@@ -30,20 +19,18 @@ func rebuildbase64(w http.ResponseWriter, r *http.Request) {
 
 	cont, err := ioutil.ReadAll(base64enc)
 	if err != nil {
-		log.Println("error:", err)
-		http.Error(w, "malformed request", http.StatusBadRequest)
+		log.Println("ioutilReadAll", err)
+		http.Error(w, "empty or malformed request body", http.StatusBadRequest)
 
 		return
 	}
 
-	// there some err variable shadowing
-	//var buf []byte
 	var mp map[string]json.RawMessage
 
 	err = json.Unmarshal(cont, &mp)
 	if err != nil {
-		log.Println("error:", err)
-		http.Error(w, "malformed json request", http.StatusBadRequest)
+		log.Println("unmarshal json", err)
+		http.Error(w, "malformed json format", http.StatusBadRequest)
 
 		return
 	}
@@ -51,43 +38,29 @@ func rebuildbase64(w http.ResponseWriter, r *http.Request) {
 	var str string
 	err = json.Unmarshal(mp["Base64"], &str)
 	if err != nil {
-		log.Println("error:", err)
-		http.Error(w, "malformed json request", http.StatusBadRequest)
+		log.Println("unmarshal json base64", err)
+		http.Error(w, "malformed json format ", http.StatusBadRequest)
 
 		return
 	}
 
 	buf, err := base64.StdEncoding.DecodeString(str)
 	if err != nil {
-		log.Println("error:", err)
+		log.Println("base64 decoding", err)
 		http.Error(w, "malformed base64 encoding", http.StatusBadRequest)
 		return
 
 	}
 
-	log.Printf("%v\n", r.Header.Get("Content-Type"))
-
 	log.Printf("%v\n", http.DetectContentType(buf))
 
+	//glasswall custom header
 	addgwheader(w, temp)
 
-	s, e := w.Write(buf)
+	_, e := w.Write(buf)
 	if e != nil {
 		log.Println(e)
 		return
 	}
-	log.Println(s)
-
-	// so  here we can use either open file or  ioutil.write file
-	/*
-		fmt.Fprintf(w, "%v\n", handler.Header)
-		f, err := os.OpenFile(handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		defer f.Close()
-		io.Copy(f, file)
-	*/
 
 }

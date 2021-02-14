@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"mime/multipart"
 	"net/http"
-	"os"
 )
 
 type req struct {
@@ -20,19 +18,10 @@ type req struct {
 
 func rebuildzip(w http.ResponseWriter, r *http.Request) {
 
-	//log about request
-	log.Println("method:", r.Method)
-	log.Printf("%v\n", r.URL)
-	log.Printf("%v\n", r.RemoteAddr)
-	log.Printf("%v\n", r.Host)
-	log.Printf("%v\n", r.Header)
-	log.Printf("%v\n", r.Header.Get("Content-Type"))
-
 	//m max 5 MB file name we can change ut
 	r.ParseMultipartForm(5 << 20)
 
-	//myfileparam is the name of file in post request body
-
+	//handling json , not implemeted yet
 	log.Println(r.PostFormValue("contentManagementFlagJson"))
 
 	cont := r.PostFormValue("contentManagementFlagJson")
@@ -41,19 +30,17 @@ func rebuildzip(w http.ResponseWriter, r *http.Request) {
 
 	err := json.Unmarshal([]byte(cont), &mp)
 	if err != nil {
-		log.Println("error json:", err)
-		http.Error(w, "malformed json", http.StatusBadRequest)
+		log.Println("unmarshal json:", err)
+		http.Error(w, "malformed json format", http.StatusBadRequest)
 
 		return
 	}
 
-	log.Println("json request", mp)
-
 	file, handler, err := r.FormFile("file")
 
 	if err != nil {
-		log.Println("file not found", err)
-		http.Error(w, "file not found", http.StatusBadRequest)
+		log.Println("formfile", err)
+		http.Error(w, "file not found or wrong form field  name", http.StatusBadRequest)
 
 		return
 	}
@@ -62,69 +49,34 @@ func rebuildzip(w http.ResponseWriter, r *http.Request) {
 
 	buf, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Println(err)
-		http.Error(w, "server intenal error", http.StatusInternalServerError)
+		log.Println("ioutilReadAll", err)
+		http.Error(w, "file not found", http.StatusBadRequest)
 
 		return
 	}
 
 	if handler.Header.Get("Content-Type") != "application/zip" || http.DetectContentType(buf) != "application/zip" {
-		log.Println(w, "mediatype is", handler.Header.Get("Content-Type"))
+		log.Println("mediatype is", handler.Header.Get("Content-Type"))
 
-		http.Error(w, "upload file should be zip file format", http.StatusUnsupportedMediaType)
+		http.Error(w, "uploaded file should be zip format", http.StatusUnsupportedMediaType)
 
 		return
 
 	}
 
-	//this only to parse post form to extract data for log
-	if errp := r.ParseForm(); errp != nil {
-		log.Println(err)
-	}
+	//uploaded file log info
+	log.Printf("Filename: %v\n", handler.Filename)
+	log.Printf("File size: %v\n", handler.Size)
+	log.Printf("Content-Type: %v\n", handler.Header.Get("Content-Type"))
+	log.Printf("Content-Type: %v\n", http.DetectContentType(buf))
 
-	for k, v := range r.Form {
-		log.Printf("Form[%q] = %q\n", k, v)
-	}
-
-	log.Printf("%v\n", handler.Filename)
-	log.Printf("%v\n", handler.Size)
-
-	log.Printf("%v\n", handler.Header.Get("Content-Type"))
-	log.Printf("%v\n", http.DetectContentType(buf))
-
+	//glaswall custom header
 	addgwheader(w, temp)
-	s, e := w.Write(buf)
+
+	_, e := w.Write(buf)
 	if e != nil {
 		log.Println(e)
 		return
 	}
-	log.Println(s)
 
-	// so  here we can use either open file or  ioutil.write file
-	/*
-		fmt.Fprintf(w, "%v\n", handler.Header)
-		f, err := os.OpenFile(handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		defer f.Close()
-		io.Copy(f, file)
-	*/
-
-}
-
-func ioutilCopytodisk(f multipart.File, wn string, p os.FileMode) error {
-	data, err := ioutil.ReadAll(f)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	err = ioutil.WriteFile(wn, data, p)
-
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-	return nil
 }
