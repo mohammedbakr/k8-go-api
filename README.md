@@ -1,23 +1,23 @@
 # k8-go-api
 
+### Build
 
- ### Info
-Project under development
----
- ### Build
+Clone the repo then
 
-```shell
-$ go build -o server ./app
-$ ./server
+```
+cd k8-go-api
+go get
+go build
+./k8-go-api.exe
 ```
 
-### Docker build 
+The server will start at:
 
-```shell
-$ docker build -t k8-go-api .
-$ docker run -it -p 8100:8100 k8-go-api
+- Local: http://localhost:8000
+
+## End points:
+
 ```
-
-
-
----
+1- /api/rebuild/file
+2- /api/rebuild/base64
+```
