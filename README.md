@@ -4,24 +4,21 @@
 
 Clone the repo then
 
-```
-cd k8-go-api
-cd cmd
-go get
-cd ..
-go build -o server ./cmd
-./server
+
+```shell
+$ ls
 ```
 
 The server will start at:
 
-- Local: http://localhost:8000
+- Local: http://localhost:8100
 
-### Docker build
+
+### Docker build 
 
 ```shell
 $ docker build -t k8-go-api .
-$ docker run -it -p 8000:8000 k8-go-api
+$ docker run -it -p 8100:8100 k8-go-api
 ```
 
 ## End points:
@@ -29,4 +26,12 @@ $ docker run -it -p 8000:8000 k8-go-api
 ```
 1- /api/rebuild/file
 2- /api/rebuild/base64
+3- /api/rebuild/zip
+```
+
+## Postman Collections link:
+
+```
+https://www.getpostman.com/collections/78fd72df0d74b4c5e849
+
 ```
