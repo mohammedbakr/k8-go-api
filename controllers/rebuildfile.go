@@ -1,45 +1,41 @@
-package main
+package controllers
 
 import (
 	"encoding/json"
 	"io/ioutil"
+	"k8-go-api/models"
+	"k8-go-api/utils"
 	"log"
 	"net/http"
 )
 
-func rebuildfile(w http.ResponseWriter, r *http.Request) {
-
-	//m max 5 MB file name we can change ut
-	r.ParseMultipartForm(5 << 20)
+// RebuildFile rebuilds a file using its binary data
+func RebuildFile(w http.ResponseWriter, r *http.Request) {
+	// max 6 MB file size
+	r.ParseMultipartForm(6 << 20)
 
 	log.Printf("json payload : %v\n", r.PostFormValue("contentManagementFlagJson"))
-
 	cont := r.PostFormValue("contentManagementFlagJson")
-
 	var mp map[string]json.RawMessage
-
 	err := json.Unmarshal([]byte(cont), &mp)
 	if err != nil {
 		log.Println("unmarshal json:", err)
-		http.Error(w, "malformed json format", http.StatusBadRequest)
+		utils.ResponseWithError(w, http.StatusBadRequest, "malformed json format")
 		return
 	}
 
 	file, handler, err := r.FormFile("file")
-
 	if err != nil {
 		log.Println("formfile", err)
-		http.Error(w, "file not found or wrong form field  name", http.StatusBadRequest)
-
+		utils.ResponseWithError(w, http.StatusBadRequest, "File is required")
 		return
 	}
-
 	defer file.Close()
 
 	buf, err := ioutil.ReadAll(file)
 	if err != nil {
 		log.Println("ioutilReadAll", err)
-		http.Error(w, "file not found", http.StatusBadRequest)
+		utils.ResponseWithError(w, http.StatusBadRequest, "file not found")
 		return
 	}
 
@@ -49,13 +45,12 @@ func rebuildfile(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Content-Type: %v\n", handler.Header.Get("Content-Type"))
 	log.Printf("Content-Type: %v\n", http.DetectContentType(buf))
 
-	//glaswall custom header
-	addgwheader(w, temp)
+	//GW custom header
+	utils.AddGWHeader(w, models.Temp)
 
 	_, e := w.Write(buf)
 	if e != nil {
 		log.Println(e)
 		return
 	}
-
 }

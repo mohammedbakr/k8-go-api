@@ -1,26 +1,16 @@
-package main
+package controllers
 
 import (
 	"encoding/json"
 	"io/ioutil"
+	"k8-go-api/models"
+	"k8-go-api/utils"
 	"log"
 	"net/http"
 )
 
-type req struct {
-	Base64                 string `json:"Base64"`
-	ContentManagementFlags struct {
-		PdfContentManagement struct {
-			Metadata int `json:"Metadata"`
-		} `json:"PdfContentManagement"`
-	} `json:"ContentManagementFlags"`
-}
-
-func rebuildzip(w http.ResponseWriter, r *http.Request) {
-
-	//m max 5 MB file name we can change ut
-	r.ParseMultipartForm(5 << 20)
-
+// Rebuildzip processes a zip uploaded by the user, returns a zip file with rebuilt files
+func Rebuildzip(w http.ResponseWriter, r *http.Request) {
 	//handling json , not implemeted yet
 	log.Println(r.PostFormValue("contentManagementFlagJson"))
 
@@ -31,37 +21,29 @@ func rebuildzip(w http.ResponseWriter, r *http.Request) {
 	err := json.Unmarshal([]byte(cont), &mp)
 	if err != nil {
 		log.Println("unmarshal json:", err)
-		http.Error(w, "malformed json format", http.StatusBadRequest)
-
+		utils.ResponseWithError(w, http.StatusBadRequest, "malformed json format")
 		return
 	}
 
 	file, handler, err := r.FormFile("file")
-
 	if err != nil {
 		log.Println("formfile", err)
-		http.Error(w, "file not found or wrong form field  name", http.StatusBadRequest)
-
+		utils.ResponseWithError(w, http.StatusBadRequest, "file not found or wrong form field  name")
 		return
 	}
-
 	defer file.Close()
 
 	buf, err := ioutil.ReadAll(file)
 	if err != nil {
 		log.Println("ioutilReadAll", err)
-		http.Error(w, "file not found", http.StatusBadRequest)
-
+		utils.ResponseWithError(w, http.StatusBadRequest, "file not found")
 		return
 	}
 
 	if handler.Header.Get("Content-Type") != "application/zip" || http.DetectContentType(buf) != "application/zip" {
 		log.Println("mediatype is", handler.Header.Get("Content-Type"))
-
-		http.Error(w, "uploaded file should be zip format", http.StatusUnsupportedMediaType)
-
+		utils.ResponseWithError(w, http.StatusUnsupportedMediaType, "uploaded file should be zip format")
 		return
-
 	}
 
 	//uploaded file log info
@@ -70,13 +52,12 @@ func rebuildzip(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Content-Type: %v\n", handler.Header.Get("Content-Type"))
 	log.Printf("Content-Type: %v\n", http.DetectContentType(buf))
 
-	//glaswall custom header
-	addgwheader(w, temp)
+	//GW custom header
+	utils.AddGWHeader(w, models.Temp)
 
 	_, e := w.Write(buf)
 	if e != nil {
 		log.Println(e)
 		return
 	}
-
 }
