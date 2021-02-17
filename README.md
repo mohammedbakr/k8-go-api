@@ -6,7 +6,10 @@ Clone the repo then
 
 
 ```shell
-$ ls
+$ cd k8-go-api
+$ go get
+$ go build
+$ ./k8-go-api.exe
 ```
 
 The server will start at:
