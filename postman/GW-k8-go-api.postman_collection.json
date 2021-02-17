@@ -1,12 +1,58 @@
 {
 	"info": {
-		"_postman_id": "d719b8a7-49f7-4a42-acd9-6e32c20d4658",
+		"_postman_id": "33fbdcb7-7af4-45d8-b95d-c142ad2896ed",
 		"name": "GW-k8-go-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Rebuild From File",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "mysecrettoken",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/ds/go/src/github.com/mohammedbakr/k8-proxy/k8-go-api-1/files-examples/Glasswall Proxy Solution for Sharepoint - Sep 2020.pdf"
+						},
+						{
+							"key": "contentManagementFlagJson",
+							"value": "{\n  \"PdfContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Javascript\": 1,\n    \"Acroform\": 1,\n    \"ActionsAll\": 1\n  },\n  \"ExcelContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"PowerPointContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"WordContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  }\n}\n",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/rebuild/file",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"rebuild",
+						"file"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rebuild From zip",
 			"request": {
 				"auth": {
 					"type": "bearer",

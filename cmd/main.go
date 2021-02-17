@@ -18,6 +18,6 @@ func main() {
 	mx.HandleFunc("/api/rebuild/zip", controllers.Rebuildzip).Methods("POST")
 	mx.HandleFunc("/api/rebuild/base64", controllers.RebuildBase64).Methods("POST")
 
-	fmt.Println("Server is ready to handle requests at port 8000")
-	log.Fatal(http.ListenAndServe(":8000", mx))
+	fmt.Println("Server is ready to handle requests at port 8100")
+	log.Fatal(http.ListenAndServe(":8100", mx))
 }
