@@ -7,6 +7,8 @@ import (
 	"k8-go-api/utils"
 	"log"
 	"net/http"
+
+	"github.com/rs/zerolog/hlog"
 )
 
 // RebuildFile rebuilds a file using its binary data
@@ -14,7 +16,7 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 	// max 6 MB file size
 	r.ParseMultipartForm(6 << 20)
 
-	log.Printf("json payload : %v\n", r.PostFormValue("contentManagementFlagJson"))
+	// log.Printf("json payload : %v\n", r.PostFormValue("contentManagementFlagJson"))
 	cont := r.PostFormValue("contentManagementFlagJson")
 	var mp map[string]json.RawMessage
 	err := json.Unmarshal([]byte(cont), &mp)
@@ -40,11 +42,17 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//uploaded file log info
-	log.Printf("Filename: %v\n", handler.Filename)
-	log.Printf("File size: %v\n", handler.Size)
-	log.Printf("Content-Type: %v\n", handler.Header.Get("Content-Type"))
-	log.Printf("Content-Type: %v\n", http.DetectContentType(buf))
-
+	hlog.FromRequest(r).Info().
+		Str("Filename", handler.Filename).
+		Int64("Filesize", int64(handler.Size)).
+		Str("Content-Type", handler.Header.Get("Content-Type")).
+		Msg("after response")
+		/*
+			log.Printf("Filename: %v\n", handler.Filename)
+			log.Printf("File size: %v\n", handler.Size)
+			log.Printf("Content-Type: %v\n", handler.Header.Get("Content-Type"))
+			log.Printf("Content-Type: %v\n", http.DetectContentType(buf))
+		*/
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
 

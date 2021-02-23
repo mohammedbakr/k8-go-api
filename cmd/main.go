@@ -12,7 +12,7 @@ import (
 
 func main() {
 	mx := mux.NewRouter()
-	mx.Use(middleware.AuthMiddleware)
+	mx.Use(middleware.Logmiddleware, middleware.AuthMiddleware)
 
 	mx.HandleFunc("/api/rebuild/file", controllers.RebuildFile).Methods("POST")
 	mx.HandleFunc("/api/rebuild/zip", controllers.Rebuildzip).Methods("POST")
