@@ -19,16 +19,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		errauth := "you don't have  valid authoriaztion token"
 		erremptyauth := "you didn't provide authoriaztion token"
 
-		//log about request
-		//there will be logging middleware soon
-		/*
-			log.Printf("method: %v\n", r.Method)
-			log.Printf("URL: %v\n", r.URL)
-			log.Printf("RemoteAddr: %v\n", r.RemoteAddr)
-			log.Printf("Host: %v\n", r.Host)
-			log.Printf("Content-Type: %v\n", r.Header.Get("Content-Type"))
-			log.Printf("RequestURI: %v\n", r.RequestURI)
-		*/
 		//Authorization: Bearer
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
@@ -51,7 +41,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func Logmiddleware(next http.Handler) http.Handler {
+func LogMiddleware(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 

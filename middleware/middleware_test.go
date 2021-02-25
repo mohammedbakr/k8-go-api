@@ -72,7 +72,7 @@ func logmiddlewareconnect() (int, string) {
 			Msg("Something happened")
 	})
 
-	ts := httptest.NewServer(Logmiddleware(endpoint))
+	ts := httptest.NewServer(LogMiddleware(endpoint))
 
 	client := &http.Client{}
 
