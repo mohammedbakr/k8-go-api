@@ -91,6 +91,12 @@ const (
 	  }`
 )
 
+const (
+	SampleDataPath = "./../sampledata/"
+	PdfFileName    = "file.pdf"
+	ZipFileName    = "file.zip"
+)
+
 func TestParsecontentManagementFlagJsonTest(t *testing.T) {
 
 	njson := []byte(contentManagementFlagJson)
