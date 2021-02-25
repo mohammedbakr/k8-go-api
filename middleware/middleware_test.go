@@ -26,13 +26,13 @@ func TestAuthMiddleware(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if output, _ := authmiddlewareconnect(test.hk, test.hv); output != test.status {
+		if output := authmiddlewareconnect(test.hk, test.hv); output != test.status {
 			t.Errorf("Test Failed: {%s} header, {%s} header value, status: {%d},expected: {%d}", test.hk, test.hv, test.status, output)
 		}
 	}
 }
 
-func authmiddlewareconnect(hk, hv string) (int, string) {
+func authmiddlewareconnect(hk, hv string) int {
 
 	endpoint := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "autorization succeful")
@@ -51,20 +51,19 @@ func authmiddlewareconnect(hk, hv string) (int, string) {
 		log.Fatal(err)
 	}
 	status := resp.StatusCode
-	statusm := resp.Status
 
-	return status, statusm
+	return status
 }
 
 func TestLogMiddleware(t *testing.T) {
 
-	if output, _ := logmiddlewareconnect(); output != http.StatusOK {
+	if output := logmiddlewareconnect(); output != http.StatusOK {
 		t.Errorf("Test Failed:  status: {%d},expected: {%d}", http.StatusOK, output)
 	}
 
 }
 
-func logmiddlewareconnect() (int, string) {
+func logmiddlewareconnect() int {
 
 	endpoint := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hlog.FromRequest(r).Info().
@@ -83,26 +82,6 @@ func logmiddlewareconnect() (int, string) {
 		log.Fatal(err)
 	}
 	status := resp.StatusCode
-	statusm := resp.Status
 
-	return status, statusm
+	return status
 }
-
-/*
-   var tests = []struct {
-       input    int
-       expected int
-   }{
-       {2, 4},
-       {-1, 1},
-       {0, 2},
-       {-5, -3},
-       {99999, 100001},
-   }
-
-   for _, test := range tests {
-       if output := Calculate(test.input); output != test.expected {
-           t.Error("Test Failed: {} inputted, {} expected, recieved: {}", test.input, test.expected, output)
-       }
-   }
-*/
