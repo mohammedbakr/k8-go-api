@@ -3,12 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"io/ioutil"
-	"k8-go-api/models"
-	"k8-go-api/utils"
 	"log"
 	"net/http"
 
 	"github.com/rs/zerolog"
+
+	"github.com/mohammedbakr/k8-proxy/k8-go-api/models"
+	"github.com/mohammedbakr/k8-proxy/k8-go-api/utils"
 )
 
 // RebuildFile rebuilds a file using its binary data
