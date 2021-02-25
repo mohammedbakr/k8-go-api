@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,7 +17,9 @@ import (
 
 func jsonreqbuild(flag bool) string {
 
-	cont, err := ioutil.ReadFile("../test-samples/sample.pdf")
+	fpath := fmt.Sprintf("%s%s", SampleDataPath, PdfFileName)
+
+	cont, err := ioutil.ReadFile(fpath)
 	if err != nil {
 		log.Println("ioutilReadAll", err)
 		return ""

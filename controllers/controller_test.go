@@ -91,7 +91,13 @@ const (
 	}`
 )
 
-func TestParsecontentManagementFlagJson(t *testing.T) {
+const (
+	SampleDataPath = "../sampledata/"
+	PdfFileName    = "file.pdf"
+	ZipFileName    = "file.zip"
+)
+
+func TestParsecontentManagementFlagJSON(t *testing.T) {
 
 	njson := []byte(contentManagementFlagJSON)
 	ejson := []byte{}

@@ -3,7 +3,6 @@ package controllers
 import (
 	b64 "encoding/base64"
 	"encoding/json"
-	"log"
 	"net/http"
 	"regexp"
 
@@ -19,15 +18,14 @@ func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&base64)
 	if err != nil {
-		log.Println("json decode: ", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// Validate Base64
 	if base64.Request.Base64 == "" {
-		log.Println("empty base64: ")
 		utils.ResponseWithError(w, http.StatusBadRequest, "Base64 is required")
+
 		return
 	}
 
