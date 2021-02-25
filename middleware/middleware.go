@@ -19,24 +19,39 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		errauth := "you don't have  valid authoriaztion token"
 		erremptyauth := "you didn't provide authoriaztion token"
 
+		logf := zerolog.Ctx(r.Context())
+		failauth := func() {
+			logf.UpdateContext(func(c zerolog.Context) zerolog.Context {
+				return c.Str("Auth", "Fail")
+
+			})
+		}
+
 		//Authorization: Bearer
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			utils.ResponseWithError(w, http.StatusUnauthorized, erremptyauth)
+			failauth()
 			return
 		}
 
 		authHeaderParts := strings.Fields(authHeader)
 		if len(authHeaderParts) != 2 || authHeaderParts[0] != "Bearer" {
 			utils.ResponseWithError(w, http.StatusUnauthorized, errauth)
+			failauth()
 			return
 		}
 
 		if authHeaderParts[1] != "mysecrettoken" {
 			utils.ResponseWithError(w, http.StatusUnauthorized, errauth)
+			failauth()
 			return
 		}
 
+		logf.UpdateContext(func(c zerolog.Context) zerolog.Context {
+			return c.Str("Auth", "Success")
+
+		})
 		next.ServeHTTP(w, r)
 	})
 }

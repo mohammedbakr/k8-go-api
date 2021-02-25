@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"k8-go-api/models"
 	"log"
@@ -15,7 +16,9 @@ import (
 
 func jsonreqbuild(flag bool) string {
 
-	cont, err := ioutil.ReadFile("/home/ibrahim/Downloads/sample.pdf")
+	fpath := fmt.Sprintf("%s%s", SampleDataPath, PdfFileName)
+
+	cont, err := ioutil.ReadFile(fpath)
 	if err != nil {
 		log.Println("ioutilReadAll", err)
 		return ""

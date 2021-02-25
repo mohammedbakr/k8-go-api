@@ -25,7 +25,7 @@ func TestRebuildfile(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if output := rebuildconnect(test.flags, "file.pdf"); output != test.status {
+		if output := rebuildconnect(test.flags, PdfFileName); output != test.status {
 			t.Errorf("Test Failed: {%s} flags, {%d} status value, output: {%d}", test.flags, test.status, output)
 
 		}
@@ -44,7 +44,7 @@ func TestRebuildzip(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if output := rebuildconnect(test.flags, "file.zip"); output != test.status {
+		if output := rebuildconnect(test.flags, ZipFileName); output != test.status {
 			t.Errorf("Test Failed: {%s} flags, {%d} status value, output: {%d}", test.flags, test.status, output)
 
 		}
@@ -63,7 +63,7 @@ func rebuildconnect(flag, filename string) int {
 	}
 
 	ts := httptest.NewServer(endpoint)
-	fpath := fmt.Sprintf("/home/ibrahim/sampledata/%s", filename)
+	fpath := fmt.Sprintf("%s%s", SampleDataPath, filename)
 	client := &http.Client{}
 
 	//req, err := http.NewRequest("POST", ts.URL, strings.NewReader("empty message"))
