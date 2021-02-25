@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -11,7 +10,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/hlog"
 
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/utils"
+	"github.com/mohammedbakr/k8-go-api/utils"
 )
 
 // AuthMiddleware to check authorization

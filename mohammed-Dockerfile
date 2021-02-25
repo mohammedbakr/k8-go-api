@@ -1,9 +1,0 @@
-FROM golang:1.15-alpine
-
-WORKDIR /src
-
-ADD . .
-
-RUN go build -o server ./cmd
-
-CMD [ "./server" ]
