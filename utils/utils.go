@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"k8-go-api/models"
+	"github.com/mohammedbakr/k8-proxy/k8-go-api/models"
 )
 
 const (

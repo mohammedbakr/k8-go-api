@@ -1,10 +1,11 @@
 package middleware
 
 import (
-	"k8-go-api/utils"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/mohammedbakr/k8-proxy/k8-go-api/utils"
 )
 
 // AuthMiddleware to check authorization
