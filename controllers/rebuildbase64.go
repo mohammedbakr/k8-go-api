@@ -10,18 +10,22 @@ import (
 	"github.com/mohammedbakr/k8-proxy/k8-go-api/utils"
 )
 
+const ()
+
 // RebuildBase64 Rebuilds a file using the Base64 encoded representation
 func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 	var base64 models.Base64
+
 	err := json.NewDecoder(r.Body).Decode(&base64)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// Validate Base64
 	if base64.Request.Base64 == "" {
-		utils.ResponseWithError(w, http.StatusInternalServerError, "Base64 is required")
+		utils.ResponseWithError(w, http.StatusBadRequest, "Base64 is required")
+
 		return
 	}
 
@@ -36,7 +40,7 @@ func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 	// Retun the content as Base64 decoded
 	contentEncoded, err := b64.StdEncoding.DecodeString(base64.Request.Base64)
 	if err != nil {
-		utils.ResponseWithError(w, http.StatusInternalServerError, err.Error())
+		utils.ResponseWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 

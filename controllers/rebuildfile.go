@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/rs/zerolog"
+
 	"github.com/mohammedbakr/k8-proxy/k8-go-api/models"
 	"github.com/mohammedbakr/k8-proxy/k8-go-api/utils"
 )
@@ -15,7 +17,7 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 	// max 6 MB file size
 	r.ParseMultipartForm(6 << 20)
 
-	log.Printf("json payload : %v\n", r.PostFormValue("contentManagementFlagJson"))
+	// log.Printf("json payload : %v\n", r.PostFormValue("contentManagementFlagJson"))
 	cont := r.PostFormValue("contentManagementFlagJson")
 	var mp map[string]json.RawMessage
 	err := json.Unmarshal([]byte(cont), &mp)
@@ -39,12 +41,17 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 		utils.ResponseWithError(w, http.StatusBadRequest, "file not found")
 		return
 	}
+	if handler.Filename == "" {
 
-	//uploaded file log info
-	log.Printf("Filename: %v\n", handler.Filename)
-	log.Printf("File size: %v\n", handler.Size)
-	log.Printf("Content-Type: %v\n", handler.Header.Get("Content-Type"))
-	log.Printf("Content-Type: %v\n", http.DetectContentType(buf))
+	}
+
+	logf := zerolog.Ctx(r.Context())
+	logf.UpdateContext(func(c zerolog.Context) zerolog.Context {
+		return c.Str("Filename", handler.Filename).
+			Int64("Filesize", handler.Size).
+			Str("Content-Type", handler.Header.Get("Content-Type"))
+
+	})
 
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
