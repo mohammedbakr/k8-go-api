@@ -1,0 +1,2 @@
+{"level":"info","role":"my-service","host":"host","ip":"::1","user_agent":"PostmanRuntime/7.26.10","req_id":"c0qnd4f4mktoee6f1in0","Filename":"file.pdf","Filesize":65944,"Content-Type":"application/pdf","time":"2021-02-23T22:41:37+01:00","message":"after response"}
+{"level":"info","role":"my-service","host":"host","ip":"::1","user_agent":"PostmanRuntime/7.26.10","req_id":"c0qnd4f4mktoee6f1in0","method":"POST","url":"/api/rebuild/file","status":200,"size":65944,"duration":26.888195,"time":"2021-02-23T22:41:37+01:00"}

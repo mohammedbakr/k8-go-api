@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/rs/zerolog/hlog"
+	"github.com/rs/zerolog"
 )
 
 // Rebuildzip processes a zip uploaded by the user, returns a zip file with rebuilt files
@@ -48,19 +48,14 @@ func Rebuildzip(w http.ResponseWriter, r *http.Request) {
 		//return
 	}
 
-	hlog.FromRequest(r).Info().
-		Str("Filename", handler.Filename).
-		Int64("Filesize", int64(handler.Size)).
-		Str("Content-Type", handler.Header.Get("Content-Type")).
-		Msg("after response")
+	logf := zerolog.Ctx(r.Context())
+	logf.UpdateContext(func(c zerolog.Context) zerolog.Context {
+		return c.Str("Filename", handler.Filename).
+			Int64("Filesize", handler.Size).
+			Str("Content-Type", handler.Header.Get("Content-Type"))
 
-	//uploaded file log info
-	/*
-		log.Printf("Filename: %v\n", handler.Filename)
-		log.Printf("File size: %v\n", handler.Size)
-		log.Printf("Content-Type: %v\n", handler.Header.Get("Content-Type"))
-		log.Printf("Content-Type: %v\n", http.DetectContentType(buf))
-	*/
+	})
+
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
 

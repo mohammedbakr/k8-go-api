@@ -1,9 +1,7 @@
 package middleware
 
 import (
-	"io"
 	"k8-go-api/utils"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -56,12 +54,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 func Logmiddleware(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-		if err != nil {
-			log.Fatalf("error opening file: %v", err)
-		}
-		defer f.Close()
-		log := zerolog.New(io.MultiWriter(f, os.Stdout)).With().
+
+		log := zerolog.New(os.Stdout).With().
 			Timestamp().
 			Str("role", "my-service").
 			Str("host", "host").
@@ -72,8 +66,6 @@ func Logmiddleware(next http.Handler) http.Handler {
 		// Install the logger handler with default output on the console
 		c = c.Append(hlog.NewHandler(log))
 
-		// Install some provided extra handler to set some request's context fields.
-		// Thanks to that handler, all our logs will come with some prepopulated fields.
 		c = c.Append(hlog.AccessHandler(func(r *http.Request, status, size int, duration time.Duration) {
 			hlog.FromRequest(r).Info().
 				Str("method", r.Method).
@@ -88,9 +80,9 @@ func Logmiddleware(next http.Handler) http.Handler {
 		c = c.Append(hlog.RefererHandler("referer"))
 		c = c.Append(hlog.RequestIDHandler("req_id", "Request-Id"))
 
-		// Here is your final handler
 		h := c.Then(next)
 		h.ServeHTTP(w, r)
-		// Output: {"level":"info","time":"2001-02-03T04:05:06Z","role":"my-service","host":"local-hostname","req_id":"b4g0l5t6tfid6dtrapu0","user":"current user","status":"ok","message":"Something happened"
+
 	})
+
 }

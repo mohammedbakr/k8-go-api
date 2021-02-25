@@ -36,11 +36,6 @@ func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	////////////
-	// send file to icap server
-	// still not implementated
-	////////////
-
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
 

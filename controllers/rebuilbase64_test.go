@@ -4,23 +4,21 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"k8-go-api/models"
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 )
 
-func exm(flag bool) string {
+func jsonreqbuild(flag bool) string {
 
 	cont, err := ioutil.ReadFile("/home/ibrahim/Downloads/sample.pdf")
 	if err != nil {
 		log.Println("ioutilReadAll", err)
-
+		return ""
 	}
 
 	str := base64.StdEncoding.EncodeToString(cont)
@@ -29,12 +27,12 @@ func exm(flag bool) string {
 
 	js.Request.FileName = "filename"
 
-	err = json.Unmarshal([]byte(contentManagementFlagJson), &js.Request.ContentManagementFlags)
+	js.Request.ContentManagementFlags, err = parsecontentManagementFlagJson([]byte(contentManagementFlagJson))
 	if err != nil {
-		log.Println("unlarshall", err)
+		log.Println("unmarshal", err)
+		return ""
 
 	}
-
 	if flag {
 		js.Request.Base64 = "()$--"
 	} else {
@@ -44,7 +42,7 @@ func exm(flag bool) string {
 	res, err := json.Marshal(js)
 	if err != nil {
 		log.Println("marshall", err)
-
+		return ""
 	}
 
 	return string(res)
@@ -64,14 +62,14 @@ func TestRebuilBase64(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if output, _ := rebuildBase64connect(test.flags); output != test.status {
+		if output := rebuildBase64connect(test.flags); output != test.status {
 			t.Errorf("Test Failed: {%s} flags, {%d} status value, output: {%d}", test.flags, test.status, output)
 
 		}
 	}
 }
 
-func rebuildBase64connect(flag string) (int, string) {
+func rebuildBase64connect(flag string) int {
 
 	endpoint := http.HandlerFunc(RebuildBase64)
 
@@ -90,13 +88,13 @@ func rebuildBase64connect(flag string) (int, string) {
 		body = ""
 
 	case "NORMAL":
-		body = exm(false)
+		body = jsonreqbuild(false)
 
 	case "MAlFORM":
-		body = exm(false)[1:]
+		body = jsonreqbuild(false)[1:]
 
 	case "MALFORM64":
-		body = exm(true)
+		body = jsonreqbuild(true)
 	}
 
 	req, err = newBase64UploadRequest(ts.URL, body)
@@ -108,11 +106,11 @@ func rebuildBase64connect(flag string) (int, string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	resp.Body.Close()
 
 	status := resp.StatusCode
-	statusm := resp.Status
 
-	return status, statusm
+	return status
 }
 
 func newBase64UploadRequest(uri, jsonstr string) (*http.Request, error) {
@@ -124,33 +122,4 @@ func newBase64UploadRequest(uri, jsonstr string) (*http.Request, error) {
 	req, err := http.NewRequest("POST", uri, body)
 
 	return req, err
-}
-
-func deprec() {
-	path, _ := os.Getwd()
-	path += "/test.pdf"
-	extraParams := map[string]string{
-		"title":       "My Document",
-		"author":      "Matt Aimonetti",
-		"description": "A document with all the Go programming language secrets",
-	}
-	request, err := newfileUploadRequest("https://google.com/upload", extraParams, "file", "/tmp/doc.pdf")
-	if err != nil {
-		log.Fatal(err)
-	}
-	client := &http.Client{}
-	resp, err := client.Do(request)
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		body := &bytes.Buffer{}
-		_, err := body.ReadFrom(resp.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
-		resp.Body.Close()
-		fmt.Println(resp.StatusCode)
-		fmt.Println(resp.Header)
-		fmt.Println(body)
-	}
 }
