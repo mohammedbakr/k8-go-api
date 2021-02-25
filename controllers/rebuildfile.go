@@ -8,8 +8,8 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/models"
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/utils"
+	"github.com/mohammedbakr/k8-go-api/models"
+	"github.com/mohammedbakr/k8-go-api/utils"
 )
 
 // RebuildFile rebuilds a file using its binary data

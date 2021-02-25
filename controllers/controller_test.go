@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	contentManagementFlagJson = `{
+	contentManagementFlagJSON = `{
 		"PdfContentManagement": {
 		  "Metadata": 1,
 		  "InternalHyperlinks": 1,
@@ -46,9 +46,9 @@ const (
 		  "Macros": 1,
 		  "ReviewComments": 1
 		}
-	  }`
+	}`
 
-	mcontentManagementFlagJson = `{
+	mcontentManagementFlagJSON = `{
 		"PdfContentManagement": {
 		  "Metadata": 1,
 		  "InternalHyperlinks": 1,
@@ -88,20 +88,20 @@ const (
 		  "Macros": 1,
 		  "ReviewComments": 1
 		}
-	  }`
+	}`
 )
 
 const (
-	SampleDataPath = "./../sampledata/"
+	SampleDataPath = "../sampledata/"
 	PdfFileName    = "file.pdf"
 	ZipFileName    = "file.zip"
 )
 
-func TestParsecontentManagementFlagJsonTest(t *testing.T) {
+func TestParsecontentManagementFlagJSON(t *testing.T) {
 
-	njson := []byte(contentManagementFlagJson)
+	njson := []byte(contentManagementFlagJSON)
 	ejson := []byte{}
-	mjson := []byte(mcontentManagementFlagJson)
+	mjson := []byte(mcontentManagementFlagJSON)
 
 	notnil := func(i error) bool {
 		if i != nil {
@@ -120,7 +120,7 @@ func TestParsecontentManagementFlagJsonTest(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if _, err := parsecontentManagementFlagJson(test.c); notnil(err) != test.er {
+		if _, err := parsecontentManagementFlagJSON(test.c); notnil(err) != test.er {
 			t.Errorf("Test Failed: Error {%s} ", err)
 
 		}
