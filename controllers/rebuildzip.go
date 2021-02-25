@@ -3,10 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"io/ioutil"
-	"k8-go-api/models"
-	"k8-go-api/utils"
 	"log"
 	"net/http"
+
+	"github.com/mohammedbakr/k8-go-api/models"
+	"github.com/mohammedbakr/k8-go-api/utils"
 
 	"github.com/rs/zerolog"
 )

@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"k8-go-api/controllers"
-	"k8-go-api/middleware"
 	"log"
 	"net/http"
+
+	"github.com/mohammedbakr/k8-go-api/controllers"
+	"github.com/mohammedbakr/k8-go-api/middleware"
 
 	"github.com/gorilla/mux"
 )

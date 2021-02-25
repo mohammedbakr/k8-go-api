@@ -5,17 +5,18 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"io/ioutil"
-	"k8-go-api/models"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/mohammedbakr/k8-go-api/models"
 )
 
 func jsonreqbuild(flag bool) string {
 
-	cont, err := ioutil.ReadFile("/home/ibrahim/Downloads/sample.pdf")
+	cont, err := ioutil.ReadFile("../test-samples/sample.pdf")
 	if err != nil {
 		log.Println("ioutilReadAll", err)
 		return ""
@@ -27,7 +28,7 @@ func jsonreqbuild(flag bool) string {
 
 	js.Request.FileName = "filename"
 
-	js.Request.ContentManagementFlags, err = parsecontentManagementFlagJson([]byte(contentManagementFlagJson))
+	js.Request.ContentManagementFlags, err = parsecontentManagementFlagJSON([]byte(contentManagementFlagJSON))
 	if err != nil {
 		log.Println("unmarshal", err)
 		return ""

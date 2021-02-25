@@ -69,7 +69,7 @@ func rebuildconnect(flag, filename string) int {
 	//req, err := http.NewRequest("POST", ts.URL, strings.NewReader("empty message"))
 
 	extraParams := map[string]string{
-		"contentManagementFlagJson": contentManagementFlagJson,
+		"contentManagementFlagJson": contentManagementFlagJSON,
 	}
 
 	var req *http.Request

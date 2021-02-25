@@ -4,22 +4,19 @@
 
 Clone the repo then
 
-
-```shell
+```
 $ cd k8-go-api
-$ go get
 $ go build
-$ ./k8-go-api.exe
+$ ./k8-go-api
 ```
 
 The server will start at:
 
 - Local: http://localhost:8100
 
+### Docker build
 
-### Docker build 
-
-```shell
+```
 $ docker build -t k8-go-api .
 $ docker run -it -p 8100:8100 k8-go-api
 ```
