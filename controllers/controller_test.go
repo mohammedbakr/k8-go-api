@@ -120,7 +120,7 @@ func TestParsecontentManagementFlagJSON(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if _, err := parsecontentManagementFlagJSON(test.c); notnil(err) != test.er {
+		if _, err := parseContentManagementFlagJSON(test.c); notnil(err) != test.er {
 			t.Errorf("Test Failed: Error {%s} ", err)
 
 		}

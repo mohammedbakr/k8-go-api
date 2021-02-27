@@ -33,7 +33,7 @@ func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 	base64regex := regexp.MustCompile(`^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$`)
 	match := base64regex.MatchString(base64.Request.Base64)
 	if !match {
-		utils.ResponseWithError(w, http.StatusInternalServerError, "Invalid Base64 format")
+		utils.ResponseWithError(w, http.StatusBadRequest, "Invalid Base64 format")
 		return
 	}
 
