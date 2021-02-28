@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/mohammedbakr/k8-go-api/models"
-	"github.com/mohammedbakr/k8-go-api/utils"
+	"github.com/k8-proxy/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/utils"
 )
 
 const ()

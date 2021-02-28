@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mohammedbakr/k8-go-api/utils"
+	"github.com/k8-proxy/k8-go-api/utils"
 
 	"github.com/justinas/alice"
 	"github.com/rs/zerolog"

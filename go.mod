@@ -1,4 +1,4 @@
-module github.com/mohammedbakr/k8-go-api
+module github.com/k8-proxy/k8-go-api
 
 go 1.16
 

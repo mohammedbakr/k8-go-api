@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mohammedbakr/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/models"
 )
 
 func jsonreqbuild(flag bool) string {

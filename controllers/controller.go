@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/mohammedbakr/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/models"
 )
 
 func parseContentManagementFlagJSON(c []byte) (models.ContentManagementFlagContent, error) {
