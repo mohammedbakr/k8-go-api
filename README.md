@@ -6,8 +6,8 @@ Clone the repo then
 
 ```
 $ cd k8-go-api
-$ go build
-$ ./k8-go-api
+$ go build -o server ./cmd
+$ ./server
 ```
 
 The server will start at:
