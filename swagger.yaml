@@ -23,7 +23,7 @@ paths:
       parameters:
         - in: header
           name: Accept
-          description: A value of 'application/octet-stream' will return the rebuilt file's binary content to the client.
+          description: A value of 'application/octet-stream' will return the rebuilt file's binary content to the client. If this is not set then the file's Base64 representation will be returned instead.
           schema:
             type: string
             default: application/octet-stream
@@ -210,7 +210,7 @@ paths:
       parameters:
         - in: header
           name: Accept
-          description: A value of 'application/octet-stream' will return the rebuilt file's binary content to the client.
+          description: A value of 'application/octet-stream' will return the rebuilt file's binary content to the client. If this is not set then the file's Base64 representation will be returned instead.
           schema:
             type: string
             default: application/octet-stream
