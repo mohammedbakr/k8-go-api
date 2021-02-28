@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/models"
 )
 
 func TestRebuildBase64(t *testing.T) {

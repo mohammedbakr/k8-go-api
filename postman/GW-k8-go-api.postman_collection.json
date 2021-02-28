@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "33fbdcb7-7af4-45d8-b95d-c142ad2896ed",
+		"_postman_id": "d719b8a7-49f7-4a42-acd9-6e32c20d4658",
 		"name": "GW-k8-go-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -30,64 +30,18 @@
 						},
 						{
 							"key": "contentManagementFlagJson",
-							"value": "{\n  \"PdfContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Javascript\": 1,\n    \"Acroform\": 1,\n    \"ActionsAll\": 1\n  },\n  \"ExcelContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"PowerPointContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"WordContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  }\n}\n",
+							"value": "{\n  \"PdfContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Javascript\": 1,\n    \"Acroform\": 1,\n    \"ActionsAll\": 1\n  },\n  \"ExcelContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"PowerPointContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"WordContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  }\n}",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/rebuild/file",
+					"raw": "http://localhost:8100/api/rebuild/file",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8000",
-					"path": [
-						"api",
-						"rebuild",
-						"file"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Rebuild From zip",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "mysecrettoken",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "/C:/Users/ds/go/src/github.com/mohammedbakr/k8-proxy/k8-go-api-1/files-examples/Glasswall Proxy Solution for Sharepoint - Sep 2020.pdf"
-						},
-						{
-							"key": "contentManagementFlagJson",
-							"value": "{\n  \"PdfContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Javascript\": 1,\n    \"Acroform\": 1,\n    \"ActionsAll\": 1\n  },\n  \"ExcelContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"PowerPointContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"WordContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  }\n}\n",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/rebuild/file",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
+					"port": "8100",
 					"path": [
 						"api",
 						"rebuild",
@@ -122,16 +76,62 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/rebuild/base64",
+					"raw": "http://localhost:8100/api/rebuild/base64",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8000",
+					"port": "8100",
 					"path": [
 						"api",
 						"rebuild",
 						"base64"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "rebuild from zip",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "mysecrettoken",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/ds/go/src/github.com/mohammedbakr/k8-proxy/k8-go-api-1/files-examples/test-zip.zip"
+						},
+						{
+							"key": "contentManagementFlagJson",
+							"value": "{\n  \"PdfContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Javascript\": 1,\n    \"Acroform\": 1,\n    \"ActionsAll\": 1\n  },\n  \"ExcelContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"PowerPointContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  },\n  \"WordContentManagement\": {\n    \"Metadata\": 1,\n    \"InternalHyperlinks\": 1,\n    \"ExternalHyperlinks\": 1,\n    \"EmbeddedFiles\": 1,\n    \"EmbeddedImages\": 1,\n    \"DynamicDataExchange\": 1,\n    \"Macros\": 1,\n    \"ReviewComments\": 1\n  }\n}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8100/api/rebuild/zip",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8100",
+					"path": [
+						"api",
+						"rebuild",
+						"zip"
 					]
 				}
 			},

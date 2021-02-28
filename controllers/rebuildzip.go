@@ -6,9 +6,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/k8-proxy/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/utils"
+
 	"github.com/rs/zerolog"
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/models"
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/utils"
 )
 
 // Rebuildzip processes a zip uploaded by the user, returns a zip file with rebuilt files

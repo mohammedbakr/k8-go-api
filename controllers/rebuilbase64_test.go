@@ -6,12 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"k8-go-api/models"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/k8-proxy/k8-go-api/models"
 )
 
 func jsonreqbuild(flag bool) string {
@@ -30,7 +31,7 @@ func jsonreqbuild(flag bool) string {
 
 	js.Request.FileName = "filename"
 
-	js.Request.ContentManagementFlags, err = parsecontentManagementFlagJson([]byte(contentManagementFlagJson))
+	js.Request.ContentManagementFlags, err = parseContentManagementFlagJSON([]byte(contentManagementFlagJSON))
 	if err != nil {
 		log.Println("unmarshal", err)
 		return ""

@@ -2,16 +2,17 @@ package controllers
 
 import (
 	"encoding/json"
-	"k8-go-api/models"
 	"log"
+
+	"github.com/k8-proxy/k8-go-api/models"
 )
 
-func parsecontentManagementFlagJson(c []byte) (models.ContentManagementFlagContent, error) {
+func parseContentManagementFlagJSON(c []byte) (models.ContentManagementFlagContent, error) {
 
 	var d models.ContentManagementFlagContent
 	err := json.Unmarshal(c, &d)
 	if err != nil {
-		log.Println("unlarshall", err)
+		log.Println("unmarshall", err)
 		return d, err
 
 	}

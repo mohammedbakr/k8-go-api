@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/models"
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/utils"
+	"github.com/k8-proxy/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/utils"
 )
 
 const ()
@@ -33,11 +33,11 @@ func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 	base64regex := regexp.MustCompile(`^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$`)
 	match := base64regex.MatchString(base64.Request.Base64)
 	if !match {
-		utils.ResponseWithError(w, http.StatusInternalServerError, "Invalid Base64 format")
+		utils.ResponseWithError(w, http.StatusBadRequest, "Invalid Base64 format")
 		return
 	}
 
-	// Retun the content as Base64 decoded
+	// Retun the content as Base64 encoded
 	contentEncoded, err := b64.StdEncoding.DecodeString(base64.Request.Base64)
 	if err != nil {
 		utils.ResponseWithError(w, http.StatusBadRequest, err.Error())

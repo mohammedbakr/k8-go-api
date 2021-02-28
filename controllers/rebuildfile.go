@@ -6,10 +6,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/rs/zerolog"
+	"github.com/k8-proxy/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/utils"
 
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/models"
-	"github.com/mohammedbakr/k8-proxy/k8-go-api/utils"
+	"github.com/rs/zerolog"
 )
 
 // RebuildFile rebuilds a file using its binary data
