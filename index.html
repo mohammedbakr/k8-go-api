@@ -12,6 +12,9 @@
     -->
     <link rel="manifest" href="./dist/manifest.json" />
     <style>
+      .swagger-ui .opblock-description-wrapper, .swagger-ui .opblock-external-docs-wrapper, .swagger-ui .opblock-title_normal {
+    font-size: 14px;
+      }
       html
       {
         box-sizing: border-box;
@@ -19,12 +22,6 @@
         overflow-y: scroll;
       }
 
-      *,
-      *:before,
-      *:after
-      {
-        box-sizing: inherit;
-      }
 
       body
       {
@@ -71,7 +68,7 @@
     window.onload = function() {
       // Begin Swagger UI call region
       const ui = SwaggerUIBundle({
-        url: "swagger.yaml",
+        url: "https://raw.githubusercontent.com/k8-proxy/k8-go-api/develop/swagger/api.yaml",
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
