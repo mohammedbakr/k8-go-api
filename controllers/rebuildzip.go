@@ -37,16 +37,19 @@ func Rebuildzip(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 
 	buf, err := ioutil.ReadAll(file)
+
+	bufsign := buf[:511]
+
 	if err != nil {
 		log.Println("ioutilReadAll", err)
 		utils.ResponseWithError(w, http.StatusBadRequest, "file not found")
 		return
 	}
 
-	if handler.Header.Get("Content-Type") != "application/zip" || http.DetectContentType(buf) != "application/zip" {
+	if handler.Header.Get("Content-Type") != "application/zip" || http.DetectContentType(bufsign) != "application/zip" {
 		log.Println("mediatype is", handler.Header.Get("Content-Type"))
-		//utils.ResponseWithError(w, http.StatusUnsupportedMediaType, "uploaded file should be zip format")
-		//return
+		utils.ResponseWithError(w, http.StatusUnsupportedMediaType, "uploaded file should be zip format")
+		return
 	}
 
 	logf := zerolog.Ctx(r.Context())
