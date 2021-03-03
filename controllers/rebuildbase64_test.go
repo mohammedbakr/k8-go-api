@@ -1,36 +1,129 @@
 package controllers
 
 import (
-	b64 "encoding/base64"
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
-	"regexp"
+	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/k8-proxy/k8-go-api/models"
 )
 
-func TestRebuildBase64(t *testing.T) {
-	var base64 models.Base64
-	// base64 encoded
-	base64.Request.Base64 = "bG9yZW0NCg=="
-	// base64.Request.Base64 = ""
-	// base64.Request.Base64 = "Hello"
+func jsonreqbuild(flag bool) string {
 
-	// Validate Base64
-	if base64.Request.Base64 == "" {
-		log.Fatal("Base64 is required")
+	fpath := fmt.Sprintf("%s%s", SampleDataPath, PdfFileName)
+
+	cont, err := ioutil.ReadFile(fpath)
+	if err != nil {
+		log.Println("ioutilReadAll", err)
+		return ""
 	}
 
-	// Using Regex
-	base64regex := regexp.MustCompile(`^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$`)
-	match := base64regex.MatchString(base64.Request.Base64)
-	if !match {
-		log.Fatal("Invalid Base64 format")
+	str := base64.StdEncoding.EncodeToString(cont)
+
+	var js models.Base64
+
+	js.Request.FileName = "filename"
+
+	js.Request.ContentManagementFlags, err = parseContentManagementFlagJSON([]byte(contentManagementFlagJSON))
+	if err != nil {
+		log.Println("unmarshal", err)
+		return ""
+
+	}
+	if flag {
+		js.Request.Base64 = "()$--"
+	} else {
+		js.Request.Base64 = str
 	}
 
-	// Retun the content as Base64 decoded
-	_, err := b64.StdEncoding.DecodeString(base64.Request.Base64)
+	res, err := json.Marshal(js)
+	if err != nil {
+		log.Println("marshall", err)
+		return ""
+	}
+
+	return string(res)
+
+}
+
+func TestRebuilBase64(t *testing.T) {
+
+	var tests = []struct {
+		flags  string
+		status int
+	}{
+		{"NORMAL", http.StatusOK},
+		{"EMPTY", http.StatusBadRequest},
+		{"MAlFORM", http.StatusBadRequest},
+		{"MALFORM64", http.StatusBadRequest},
+	}
+
+	for _, test := range tests {
+		if output := rebuildBase64connect(test.flags); output != test.status {
+			t.Errorf("Test Failed: {%s} flags, {%d} status value, output: {%d}", test.flags, test.status, output)
+
+		}
+	}
+}
+
+func rebuildBase64connect(flag string) int {
+
+	endpoint := http.HandlerFunc(RebuildBase64)
+
+	ts := httptest.NewServer(endpoint)
+
+	client := &http.Client{}
+
+	//req, err := http.NewRequest("POST", ts.URL, strings.NewReader("empty message"))
+
+	var req *http.Request
+	var err error
+
+	var body string
+	switch flag {
+	case "EMPTY":
+		body = ""
+
+	case "NORMAL":
+		body = jsonreqbuild(false)
+
+	case "MAlFORM":
+		body = jsonreqbuild(false)[1:]
+
+	case "MALFORM64":
+		body = jsonreqbuild(true)
+	}
+
+	req, err = newBase64UploadRequest(ts.URL, body)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	resp.Body.Close()
+
+	status := resp.StatusCode
+
+	return status
+}
+
+func newBase64UploadRequest(uri, jsonstr string) (*http.Request, error) {
+
+	body := &bytes.Buffer{}
+
+	body.ReadFrom(strings.NewReader(jsonstr))
+
+	req, err := http.NewRequest("POST", uri, body)
+
+	return req, err
 }

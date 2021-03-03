@@ -7,9 +7,9 @@ import (
 	"github.com/k8-proxy/k8-go-api/models"
 )
 
-func parseContentManagementFlagJSON(c []byte) (models.ContentManagementFlagContent, error) {
+func parseContentManagementFlagJSON(c []byte) (models.ContentManagementFlags, error) {
 
-	var d models.ContentManagementFlagContent
+	var d models.ContentManagementFlags
 	err := json.Unmarshal(c, &d)
 	if err != nil {
 		log.Println("unmarshall", err)
