@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	defer controllers.Conn().Close()
 	mx := mux.NewRouter()
 	mx.Use(middleware.LogMiddleware, middleware.AuthMiddleware)
 
