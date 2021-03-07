@@ -7,6 +7,8 @@ import (
 	"net/http"
 
 	"github.com/k8-proxy/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/pkg/message"
+	"github.com/k8-proxy/k8-go-api/pkg/store"
 	"github.com/k8-proxy/k8-go-api/utils"
 
 	"github.com/rs/zerolog"
@@ -60,6 +62,8 @@ func Rebuildzip(w http.ResponseWriter, r *http.Request) {
 
 	})
 
+	store.St()
+	message.AmqpM()
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
 

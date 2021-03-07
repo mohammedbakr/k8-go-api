@@ -5,14 +5,14 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/k8-proxy/k8-go-api/controllers"
 	"github.com/k8-proxy/k8-go-api/middleware"
-
-	"github.com/gorilla/mux"
+	"github.com/k8-proxy/k8-go-api/pkg/message"
 )
 
 func main() {
-	defer controllers.Conn().Close()
+	defer message.Conn().Close()
 	mx := mux.NewRouter()
 	mx.Use(middleware.LogMiddleware, middleware.AuthMiddleware)
 
