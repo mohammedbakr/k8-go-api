@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ibrahimk9000/k8-go-comm/pkg/minio"
+	"github.com/k8-proxy/k8-go-comm/pkg/minio"
 	min "github.com/minio/minio-go/v7"
 )
 

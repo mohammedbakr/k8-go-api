@@ -5,7 +5,7 @@ import (
 
 	"github.com/streadway/amqp"
 
-	"github.com/ibrahimk9000/k8-go-comm/pkg/rabbitmq"
+	"github.com/k8-proxy/k8-go-comm/pkg/rabbitmq"
 )
 
 var (
