@@ -14,6 +14,18 @@
 
 # k8-go-api
 
+- Go package that connects with ICAP server that recieves an infected file and rebuild it using its content.
+- It uses [comm package](https://github.com/k8-proxy/k8-go-comm) that wraps MinIO and RabbitMQ together.
+
+### Steps of processing
+
+- User request with file.
+- The endpoint uploads the file to MinIO and returns a URL.
+- The endpoint publishes a message to RabbitMQ queue that contains URL and header info like source language and target.
+- The translation processing ( mimic processing pod ) consumes the message and download file from MinIO and translate it and then upload it to MinIO and get a URL.
+- Then publish the translated file URL to the queue.
+- Our API consumes the message that contains URL to the translated file and download it and write it to the HTTP response.
+
 ## Build
 
 Clone the repo then
