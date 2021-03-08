@@ -12,7 +12,5 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
-files/
-exp/
-files-examples/
+vendor/
+
