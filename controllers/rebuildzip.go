@@ -7,6 +7,8 @@ import (
 	"net/http"
 
 	"github.com/k8-proxy/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/pkg/message"
+	"github.com/k8-proxy/k8-go-api/pkg/store"
 	"github.com/k8-proxy/k8-go-api/utils"
 
 	"github.com/rs/zerolog"
@@ -59,11 +61,24 @@ func Rebuildzip(w http.ResponseWriter, r *http.Request) {
 			Str("Content-Type", handler.Header.Get("Content-Type"))
 
 	})
+	/////
+	// this experemental  , it connect to a translating service process
+	url, err := store.St(buf, "pretranslate")
+	if err != nil {
+		log.Println(err)
+	}
 
+	miniourl := message.AmqpM("auto", "ar", url)
+
+	buf2, err := getfile(miniourl)
+	if err != nil {
+		log.Println(err)
+	}
+	/////////////////////////
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
 
-	_, e := w.Write(buf)
+	_, e := w.Write(buf2)
 	if e != nil {
 		log.Println(e)
 		return

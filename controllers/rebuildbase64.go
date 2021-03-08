@@ -7,6 +7,8 @@ import (
 	"regexp"
 
 	"github.com/k8-proxy/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/pkg/message"
+	"github.com/k8-proxy/k8-go-api/pkg/store"
 	"github.com/k8-proxy/k8-go-api/utils"
 )
 
@@ -39,9 +41,13 @@ func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 		utils.ResponseWithError(w, http.StatusBadRequest, "Invalid Base64 format")
 		return
 	}
-	log.Println(base64.Request.ContentManagementFlags)
 	// Retun the content as Base64 encoded
+	url, err := store.St([]byte("translate this test file "), "pretranslate")
+	if err != nil {
+		log.Println(err)
+	}
 
+	message.AmqpM("auto", "fr", url)
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
 

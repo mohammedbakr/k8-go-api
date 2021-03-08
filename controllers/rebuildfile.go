@@ -7,13 +7,16 @@ import (
 	"net/http"
 
 	"github.com/k8-proxy/k8-go-api/models"
+	"github.com/k8-proxy/k8-go-api/pkg/store"
 	"github.com/k8-proxy/k8-go-api/utils"
 
+	"github.com/k8-proxy/k8-go-api/pkg/message"
 	"github.com/rs/zerolog"
 )
 
 // RebuildFile rebuilds a file using its binary data
 func RebuildFile(w http.ResponseWriter, r *http.Request) {
+
 	// max 6 MB file size
 	r.ParseMultipartForm(6 << 20)
 
@@ -53,12 +56,44 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 
 	})
 
+	/////////////////////////////
+	// this experemental  , it connect to a translating service process
+
+	url, err := store.St(buf, "pretranslate")
+	if err != nil {
+		log.Println(err)
+	}
+
+	miniourl := message.AmqpM("auto", "es", url)
+
+	buf2, err := getfile(miniourl)
+	if err != nil {
+		log.Println(err)
+	}
+	/////////////////////////
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
 
-	_, e := w.Write(buf)
+	_, e := w.Write(buf2)
 	if e != nil {
 		log.Println(e)
 		return
 	}
+}
+
+func getfile(url string) ([]byte, error) {
+
+	f := []byte{}
+	resp, err := http.Get(url)
+	if err != nil {
+		return f, err
+	}
+	defer resp.Body.Close()
+
+	f, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return f, err
+	}
+	return f, nil
+
 }
