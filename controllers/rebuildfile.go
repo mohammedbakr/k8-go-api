@@ -57,6 +57,8 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 	})
 
 	/////////////////////////////
+	// this experemental  , it connect to a translating service process
+
 	url, err := store.St(buf, "pretranslate")
 	if err != nil {
 		log.Println(err)

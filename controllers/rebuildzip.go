@@ -61,13 +61,14 @@ func Rebuildzip(w http.ResponseWriter, r *http.Request) {
 			Str("Content-Type", handler.Header.Get("Content-Type"))
 
 	})
-
+	/////
+	// this experemental  , it connect to a translating service process
 	url, err := store.St(buf, "pretranslate")
 	if err != nil {
 		log.Println(err)
 	}
 
-	miniourl := message.AmqpM("auto", "es", url)
+	miniourl := message.AmqpM("auto", "ar", url)
 
 	buf2, err := getfile(miniourl)
 	if err != nil {
