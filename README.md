@@ -15,7 +15,7 @@
 # k8-go-api
 
 - Go package that connects with ICAP server that recieves an infected file and rebuild it using its content.
-- It uses [comm package](https://github.com/k8-proxy/k8-go-comm)) that wraps MinIO and RabbitMQ together.
+- It uses [comm package](https://github.com/k8-proxy/k8-go-comm) that wraps MinIO and RabbitMQ together.
 
 ### Steps of processing
 
