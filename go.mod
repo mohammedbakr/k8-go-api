@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/gorilla/mux v1.8.0
+	github.com/ibrahimk9000/k8-go-comm v0.0.0-20210307221849-a4df33b0ed90
 	github.com/justinas/alice v1.2.0
 	github.com/minio/minio-go/v7 v7.0.10
 	github.com/rs/zerolog v1.20.0

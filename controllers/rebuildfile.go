@@ -57,15 +57,41 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 	})
 
 	/////////////////////////////
-	store.St()
-	message.AmqpM()
+	url, err := store.St(buf, "pretranslate")
+	if err != nil {
+		log.Println(err)
+	}
+
+	miniourl := message.AmqpM("auto", "es", url)
+
+	buf2, err := getfile(miniourl)
+	if err != nil {
+		log.Println(err)
+	}
 	/////////////////////////
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
 
-	_, e := w.Write(buf)
+	_, e := w.Write(buf2)
 	if e != nil {
 		log.Println(e)
 		return
 	}
+}
+
+func getfile(url string) ([]byte, error) {
+
+	f := []byte{}
+	resp, err := http.Get(url)
+	if err != nil {
+		return f, err
+	}
+	defer resp.Body.Close()
+
+	f, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return f, err
+	}
+	return f, nil
+
 }

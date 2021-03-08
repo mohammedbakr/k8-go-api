@@ -5,18 +5,15 @@ import (
 
 	"github.com/streadway/amqp"
 
-	"github.com/k8-proxy/k8-go-api/pkg/rabbitmq"
+	"github.com/ibrahimk9000/k8-go-comm/pkg/rabbitmq"
 )
 
 var (
-	exchange   = "adaptation-exchange"
-	routingKey = "adaptation-request"
-	queueName  = "adaptation-request-queue"
-
-	processing_exchange   = "processing-exchange"
-	processing_routingKey = "processing-request"
-	processing_queueName  = "processing-queue"
+	exchange   = "transalte-exchange"
+	routingKey = "transalte-request"
+	queueName  = "transalte-queue"
 )
+
 var (
 	conn *amqp.Connection
 )
@@ -35,7 +32,7 @@ func init() {
 	}
 }
 
-func AmqpM() {
+func AmqpM(source, target, url string) string {
 
 	publisher, err := rabbitmq.NewQueuePublisher(conn, exchange)
 	if err != nil {
@@ -45,23 +42,22 @@ func AmqpM() {
 	defer publisher.Close()
 
 	// Start a consumer
-	msgs, ch, err := rabbitmq.NewQueueConsumer(conn, processing_queueName, processing_exchange, processing_routingKey)
+	msgs, ch, err := rabbitmq.NewQueueConsumer(conn, queueName, exchange, routingKey)
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
 	defer ch.Close()
 
 	table := amqp.Table{
-		"file-id":               "myfileid",
-		"source-file-location":  "/home/ibrahim/my_work/k8-go-api/sampledata/file.pdf",
-		"rebuilt-file-location": "sampledata/file.zip",
+		"sourcelanguage": source,
+		"targetlanguage": target,
 	}
 
-	err = rabbitmq.PublishMessage(publisher, exchange, routingKey, table, []byte("ibrahim"))
+	err = rabbitmq.PublishMessage(publisher, exchange, routingKey, table, []byte(url))
 	if err != nil {
 		log.Println("PublishMessage", err)
 
-		return
+		return ""
 	}
 
 	var miniourl string
@@ -71,7 +67,7 @@ func AmqpM() {
 	go func() {
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
-			miniourl = d.Headers["source-presigned-url"].(string)
+			miniourl = string(d.Body)
 			notforever <- true
 		}
 	}()
@@ -80,4 +76,5 @@ func AmqpM() {
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 
 	log.Println(miniourl)
+	return miniourl
 }

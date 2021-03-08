@@ -42,8 +42,12 @@ func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Retun the content as Base64 encoded
-	store.St()
-	message.AmqpM()
+	url, err := store.St([]byte("translate this"), "pretranslate")
+	if err != nil {
+		log.Println(err)
+	}
+
+	message.AmqpM("english", "french", url)
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
 
