@@ -14,25 +14,7 @@ var (
 	queueName  = "transalte-queue"
 )
 
-var (
-	conn *amqp.Connection
-)
-
-func Conn() *amqp.Connection {
-	return conn
-}
-func init() {
-	adaptationRequestQueueHostname := "localhost"
-	adaptationRequestQueuePort := "5672"
-
-	var err error
-	conn, err = rabbitmq.NewInstance(adaptationRequestQueueHostname, adaptationRequestQueuePort, "", "")
-	if err != nil {
-		log.Fatalf("%s", err)
-	}
-}
-
-func AmqpM(source, target, url string) string {
+func AmqpM(conn *amqp.Connection, source, target, url string) string {
 
 	publisher, err := rabbitmq.NewQueuePublisher(conn, exchange)
 	if err != nil {

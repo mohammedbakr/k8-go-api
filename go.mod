@@ -9,4 +9,5 @@ require (
 	github.com/minio/minio-go/v7 v7.0.10
 	github.com/rs/zerolog v1.20.0
 	github.com/streadway/amqp v1.0.0
+	github.com/subosito/gotenv v1.2.0
 )

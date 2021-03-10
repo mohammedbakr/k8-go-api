@@ -31,7 +31,10 @@
 
 ## Build
 
-Clone the repo then
+- Clone the repo.
+- Rename/copy .env.example file to .env
+- Modify .env file according to your needs.
+- Open the terminal in your current directory then run:
 
 ```
 cd k8-go-api

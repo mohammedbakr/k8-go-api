@@ -5,11 +5,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/k8-proxy/k8-go-api/models"
 	"github.com/k8-proxy/k8-go-api/pkg/message"
 	"github.com/k8-proxy/k8-go-api/pkg/store"
 	"github.com/k8-proxy/k8-go-api/utils"
+	"github.com/k8-proxy/k8-go-comm/pkg/minio"
+	"github.com/k8-proxy/k8-go-comm/pkg/rabbitmq"
 
 	"github.com/rs/zerolog"
 )
@@ -63,12 +66,25 @@ func Rebuildzip(w http.ResponseWriter, r *http.Request) {
 	})
 	/////
 	// this experemental  , it connect to a translating service process
-	url, err := store.St(buf, "pretranslate")
+	connRabMQ, err := rabbitmq.NewInstance(os.Getenv("ADAPTATION_REQUEST_QUEUE_HOSTNAME"), os.Getenv("ADAPTATION_REQUEST_QUEUE_PORT"), os.Getenv("MESSAGE_BROKER_USER"), os.Getenv("MESSAGE_BROKER_PASSWORD"))
+	if err != nil {
+		utils.ResponseWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	defer connRabMQ.Close()
+
+	cl, err := minio.NewMinioClient(os.Getenv("MINIO_ENDPOINT"), os.Getenv("MINIO_ACCESS_KEY"), os.Getenv("MINIO_SECRET_KEY"), false)
+	if err != nil {
+		utils.ResponseWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	url, err := store.St(cl, buf, "pretranslate")
 	if err != nil {
 		log.Println(err)
 	}
 
-	miniourl := message.AmqpM("auto", "ar", url)
+	miniourl := message.AmqpM(connRabMQ, "auto", "ar", url)
 
 	buf2, err := getfile(miniourl)
 	if err != nil {
