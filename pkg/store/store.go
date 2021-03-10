@@ -22,7 +22,7 @@ var (
 	cl *min.Client
 )
 
-func init() {
+func Init() {
 	var err error
 	cl, err = minio.NewMinioClient(MinioEndpoint, MinioAccessKey, MinioSecretKey, false)
 	if err != nil {
