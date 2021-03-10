@@ -47,8 +47,9 @@ func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	message.AmqpM("auto", "fr", url)
-	//GW custom header
+	reqid := r.Header.Get("Request-Id")
+
+	message.AmqpM(reqid, url) //GW custom header
 	utils.AddGWHeader(w, models.Temp)
 
 	_, err = w.Write([]byte(base64.Request.Base64))
