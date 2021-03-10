@@ -17,7 +17,6 @@ import (
 // Rebuildzip processes a zip uploaded by the user, returns a zip file with rebuilt files
 func Rebuildzip(w http.ResponseWriter, r *http.Request) {
 	//handling json , not implemeted yet
-	//log.Println(r.PostFormValue("contentManagementFlagJson"))
 
 	cont := r.PostFormValue("contentManagementFlagJson")
 
@@ -68,9 +67,11 @@ func Rebuildzip(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	miniourl := message.AmqpM("auto", "ar", url)
+	reqid := r.Header.Get("Request-Id")
 
-	buf2, err := getfile(miniourl)
+	miniourl := message.AmqpM(reqid, url)
+
+	buf2, err := store.Getfile(miniourl)
 	if err != nil {
 		log.Println(err)
 	}

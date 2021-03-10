@@ -2,7 +2,9 @@ package store
 
 import (
 	"bytes"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/k8-proxy/k8-go-comm/pkg/minio"
@@ -52,5 +54,22 @@ func St(file []byte, filename string) (string, error) {
 
 	}
 	return urlx.String(), nil
+
+}
+
+func Getfile(url string) ([]byte, error) {
+
+	f := []byte{}
+	resp, err := http.Get(url)
+	if err != nil {
+		return f, err
+	}
+	defer resp.Body.Close()
+
+	f, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return f, err
+	}
+	return f, nil
 
 }
