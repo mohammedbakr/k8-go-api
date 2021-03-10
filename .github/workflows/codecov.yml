@@ -27,9 +27,8 @@ jobs:
           docker run -d -p 9000:9000 -e "MINIO_ROOT_USER=minioadmin" -e "MINIO_ROOT_PASSWORD=minioadmin"  minio/minio server /data
           docker run -d --hostname my-rabbit --name rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 
-      - name: Generate coverage report
-        run: |
-          go test `go list ./... | grep -v cmd | grep -v models | grep -v utils`  -coverprofile=coverage.txt -covermode=atomic
+      - name: TestCov
+        run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...          
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v1.2.2
