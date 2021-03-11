@@ -19,7 +19,6 @@ jobs:
 
       - name: Build
         run: go build -o server ./cmd
-
 # Tests disabled till dependencies are resolved
 #      - name: Test
 #       run: go test ./...

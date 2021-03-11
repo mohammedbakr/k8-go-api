@@ -16,29 +16,10 @@ const (
 	Aexchange   = "adaptation-exchange"
 	AroutingKey = "adaptation-request"
 	AqueueName  = "adaptation-queue"
-
-	MqHost = "localhost"
-	MqPort = "5672"
 )
 
-var (
-	conn *amqp.Connection
-)
-
-func Conn() *amqp.Connection {
-	return conn
-}
-
-func Init() {
-
-	var err error
-	conn, err = rabbitmq.NewInstance(MqHost, MqPort, "", "")
-	if err != nil {
-		log.Fatalf("%s", err)
-	}
-}
-
-func AmqpM(requestid string, url string) string {
+// AmqpM responsible for publishing and recieving the messages
+func AmqpM(conn *amqp.Connection, requestid, url string) string {
 
 	publisher, err := rabbitmq.NewQueuePublisher(conn, Exchange)
 	if err != nil {

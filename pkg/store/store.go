@@ -5,50 +5,33 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/k8-proxy/k8-go-comm/pkg/minio"
 	min "github.com/minio/minio-go/v7"
 )
 
-const (
-	MinioEndpoint     = "localhost:9000"
-	MinioAccessKey    = "minioadmin"
-	MinioSecretKey    = "minioadmin"
-	SourceMinioBucket = "test"
-)
-
-var (
-	cl *min.Client
-)
-
-func Init() {
-	var err error
-	cl, err = minio.NewMinioClient(MinioEndpoint, MinioAccessKey, MinioSecretKey, false)
-	if err != nil {
-		log.Println(err)
-	}
-
-}
-
-func St(file []byte, filename string) (string, error) {
-	exist, err := minio.CheckIfBucketExists(cl, SourceMinioBucket)
+// St for storing in MinIO Bucket
+func St(cl *min.Client, file []byte, filename string) (string, error) {
+	sourceMinioBucket := os.Getenv("MINIO_SOURCE_BUCKET")
+	exist, err := minio.CheckIfBucketExists(cl, sourceMinioBucket)
 	if err != nil || !exist {
 		log.Println("error checkbucket ", err)
-		err = minio.CreateNewBucket(cl, "test")
+		err = minio.CreateNewBucket(cl, sourceMinioBucket)
 		if err != nil {
 			log.Println(err)
 			return "", err
 		}
 
 	}
-	_, errm := minio.UploadFileToMinio(cl, SourceMinioBucket, filename, bytes.NewReader(file))
-	if errm != nil {
-		log.Println(errm)
-		return "", errm
+	_, err = minio.UploadFileToMinio(cl, sourceMinioBucket, filename, bytes.NewReader(file))
+	if err != nil {
+		log.Println(err)
+		return "", err
 	}
 	expirein := time.Second * 24 * 60 * 60
-	urlx, err := minio.GetPresignedURLForObject(cl, SourceMinioBucket, filename, expirein)
+	urlx, err := minio.GetPresignedURLForObject(cl, sourceMinioBucket, filename, expirein)
 	if err != nil {
 		log.Println(err)
 		return "", err
@@ -58,6 +41,7 @@ func St(file []byte, filename string) (string, error) {
 
 }
 
+// Getfile to get the file by URL
 func Getfile(url string) ([]byte, error) {
 
 	f := []byte{}
