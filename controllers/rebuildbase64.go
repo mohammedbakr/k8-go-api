@@ -64,9 +64,9 @@ func RebuildBase64(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	message.AmqpM(connRabMQ, "auto", "fr", url)
-	/////////////////////////
-	//GW custom header
+	reqid := r.Header.Get("Request-Id")
+
+	message.AmqpM(connRabMQ, reqid, url) //GW custom header
 	utils.AddGWHeader(w, models.Temp)
 
 	// Retun the content as Base64 encoded

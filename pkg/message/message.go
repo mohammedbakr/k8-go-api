@@ -8,15 +8,22 @@ import (
 	"github.com/k8-proxy/k8-go-comm/pkg/rabbitmq"
 )
 
-var (
-	exchange   = "transalte-exchange"
-	routingKey = "transalte-request"
-	queueName  = "transalte-queue"
+const (
+	Exchange   = "process-exchange"
+	RoutingKey = "process-request"
+	QueueName  = "process-queue"
+
+	Aexchange   = "adaptation-exchange"
+	AroutingKey = "adaptation-request"
+	AqueueName  = "adaptation-queue"
+
+	MqHost = "localhost"
+	MqPort = "5672"
 )
 
-func AmqpM(conn *amqp.Connection, source, target, url string) string {
+func AmqpM(conn *amqp.Connection, requestid, url string) string {
 
-	publisher, err := rabbitmq.NewQueuePublisher(conn, exchange)
+	publisher, err := rabbitmq.NewQueuePublisher(conn, Exchange)
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
@@ -24,18 +31,17 @@ func AmqpM(conn *amqp.Connection, source, target, url string) string {
 	defer publisher.Close()
 
 	// Start a consumer
-	msgs, ch, err := rabbitmq.NewQueueConsumer(conn, queueName, exchange, routingKey)
+	msgs, ch, err := rabbitmq.NewQueueConsumer(conn, AqueueName, Aexchange, AroutingKey)
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
 	defer ch.Close()
 
 	table := amqp.Table{
-		"sourcelanguage": source,
-		"targetlanguage": target,
+		"request-id": requestid,
 	}
 
-	err = rabbitmq.PublishMessage(publisher, exchange, routingKey, table, []byte(url))
+	err = rabbitmq.PublishMessage(publisher, Exchange, RoutingKey, table, []byte(url))
 	if err != nil {
 		log.Println("PublishMessage", err)
 
@@ -57,6 +63,5 @@ func AmqpM(conn *amqp.Connection, source, target, url string) string {
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 
-	log.Println(miniourl)
 	return miniourl
 }

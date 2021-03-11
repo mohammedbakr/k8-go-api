@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/k8-proxy/k8-go-api/models"
 	"github.com/k8-proxy/k8-go-api/pkg/store"
@@ -23,7 +24,6 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 	// max 6 MB file size
 	r.ParseMultipartForm(6 << 20)
 
-	// log.Printf("json payload : %v\n", r.PostFormValue("contentManagementFlagJson"))
 	cont := r.PostFormValue("contentManagementFlagJson")
 	var mp map[string]json.RawMessage
 	err := json.Unmarshal([]byte(cont), &mp)
@@ -47,17 +47,6 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 		utils.ResponseWithError(w, http.StatusBadRequest, "file not found")
 		return
 	}
-	if handler.Filename == "" {
-
-	}
-
-	logf := zerolog.Ctx(r.Context())
-	logf.UpdateContext(func(c zerolog.Context) zerolog.Context {
-		return c.Str("Filename", handler.Filename).
-			Int64("Filesize", handler.Size).
-			Str("Content-Type", handler.Header.Get("Content-Type"))
-
-	})
 
 	/////////////////////////////
 	// this experemental  , it connect to a translating service process
@@ -74,17 +63,26 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url, err := store.St(cl, buf, "pretranslate")
+	timer := time.Now()
+	url, err := store.St(cl, buf, "originalpdf")
 	if err != nil {
 		log.Println(err)
 	}
+	stsince := time.Since(timer)
 
-	miniourl := message.AmqpM(connRabMQ, "auto", "es", url)
+	reqid := r.Header.Get("Request-Id")
 
-	buf2, err := getfile(miniourl)
+	timer = time.Now()
+	miniourl := message.AmqpM(connRabMQ, reqid, url)
+	mqsince := time.Since(timer)
+
+	timer = time.Now()
+	buf2, err := store.Getfile(miniourl)
 	if err != nil {
 		log.Println(err)
 	}
+	gfsince := time.Since(timer)
+
 	/////////////////////////
 	//GW custom header
 	utils.AddGWHeader(w, models.Temp)
@@ -94,21 +92,13 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 		log.Println(e)
 		return
 	}
-}
 
-func getfile(url string) ([]byte, error) {
+	logf := zerolog.Ctx(r.Context())
+	logf.UpdateContext(func(c zerolog.Context) zerolog.Context {
+		return c.Str("Filename", handler.Filename).
+			Int64("Filesize", handler.Size).
+			Str("Content-Type", handler.Header.Get("Content-Type")).
+			Dur("mqduration", mqsince).Dur("minio duration", stsince).Dur("getfil duration", gfsince)
 
-	f := []byte{}
-	resp, err := http.Get(url)
-	if err != nil {
-		return f, err
-	}
-	defer resp.Body.Close()
-
-	f, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return f, err
-	}
-	return f, nil
-
+	})
 }
