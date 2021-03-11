@@ -26,12 +26,17 @@
 
 ### Steps of processing
 
-- User request with pdf file.
-- The endpoint uploads the file to MinIO and returns a URL.
+- User post request with pdf file to k8-go-api.
+- The k8-go-api endpoint uploads the file to MinIO and returns a URL.
 - The endpoint publishes a message to RabbitMQ queue that contains Minio Pre-signed URL .
 - The k8-go-echo ( mimic processing pod ) consumes the message and download pdf file from MinIO and add watermark to it and then upload it to MinIO and get a URL.
-- Then publish the processed pdf file URL to the queue.
-- Our API consumes the message that contains URL to the processed pdf file and download it and write it to the HTTP response.
+- The k8-go-echo Then publish the processed pdf file URL to the queue.
+- k8-go-api consumes the message that contains URL to the processed pdf file and download it and write it to the HTTP response.
+
+
+## Info 
+- only the rebuildfile enpoint working , the other still under development
+- the docker build have some issue we are working on
 
 ## Build
 
