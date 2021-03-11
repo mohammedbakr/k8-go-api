@@ -52,14 +52,14 @@ func RebuildFile(w http.ResponseWriter, r *http.Request) {
 	// this experemental  , it connect to a translating service process
 	connRabMQ, err := rabbitmq.NewInstance(os.Getenv("ADAPTATION_REQUEST_QUEUE_HOSTNAME"), os.Getenv("ADAPTATION_REQUEST_QUEUE_PORT"), os.Getenv("MESSAGE_BROKER_USER"), os.Getenv("MESSAGE_BROKER_PASSWORD"))
 	if err != nil {
-		utils.ResponseWithError(w, http.StatusBadRequest, err.Error())
+		utils.ResponseWithError(w, http.StatusBadRequest, "RabbitMQ Error "+err.Error())
 		return
 	}
 	defer connRabMQ.Close()
 
 	cl, err := minio.NewMinioClient(os.Getenv("MINIO_ENDPOINT"), os.Getenv("MINIO_ACCESS_KEY"), os.Getenv("MINIO_SECRET_KEY"), false)
 	if err != nil {
-		utils.ResponseWithError(w, http.StatusBadRequest, err.Error())
+		utils.ResponseWithError(w, http.StatusBadRequest, "MinIO Error "+err.Error())
 		return
 	}
 

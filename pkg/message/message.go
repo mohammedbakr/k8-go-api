@@ -16,11 +16,9 @@ const (
 	Aexchange   = "adaptation-exchange"
 	AroutingKey = "adaptation-request"
 	AqueueName  = "adaptation-queue"
-
-	MqHost = "localhost"
-	MqPort = "5672"
 )
 
+// AmqpM responsible for publishing and recieving the messages
 func AmqpM(conn *amqp.Connection, requestid, url string) string {
 
 	publisher, err := rabbitmq.NewQueuePublisher(conn, Exchange)

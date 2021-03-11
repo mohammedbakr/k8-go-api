@@ -25,10 +25,10 @@ func St(cl *min.Client, file []byte, filename string) (string, error) {
 		}
 
 	}
-	_, errm := minio.UploadFileToMinio(cl, sourceMinioBucket, filename, bytes.NewReader(file))
-	if errm != nil {
-		log.Println(errm)
-		return "", errm
+	_, err = minio.UploadFileToMinio(cl, sourceMinioBucket, filename, bytes.NewReader(file))
+	if err != nil {
+		log.Println(err)
+		return "", err
 	}
 	expirein := time.Second * 24 * 60 * 60
 	urlx, err := minio.GetPresignedURLForObject(cl, sourceMinioBucket, filename, expirein)
