@@ -29,7 +29,7 @@ func Conn() *amqp.Connection {
 	return conn
 }
 
-func init() {
+func Init() {
 
 	var err error
 	conn, err = rabbitmq.NewInstance(MqHost, MqPort, "", "")
