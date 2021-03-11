@@ -45,6 +45,20 @@ go build -o server ./cmd
 ./server
 ```
 
+- For quick start using docker to run containers for RabbitMQ and MinIO.
+- Run Standalone MinIO on Docker.
+
+```
+docker run -d -p 9000:9000 -e "MINIO_ROOT_USER=<minio_root_user_name>" -e "MINIO_ROOT_PASSWORD=<minio_root_password>" minio/minio server /data
+```
+
+- Run RabbitMQ on Docker.
+
+```
+docker run -d --hostname <host_name> --name <container_name> -p 15672:15672 -p 5672:5672 rabbitmq:3-management
+
+```
+
 The server will start at:
 
 - Local: http://localhost:8100
