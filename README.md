@@ -20,17 +20,23 @@
 
 # k8-go-api
 
-- Go package that connects with ICAP server that recieves an infected file and rebuild it using its content.
+- Go api that connects with rebuild engine service that recieves an infected file and rebuild it using its content.
 - It uses [comm package](https://github.com/k8-proxy/k8-go-comm) that wraps MinIO and RabbitMQ together.
+- for the moment we use [k8-go-echo](https://github.com/k8-proxy/k8-go-echo) that mimic the rebuild engine
 
 ### Steps of processing
 
-- User request with file.
-- The endpoint uploads the file to MinIO and returns a URL.
-- The endpoint publishes a message to RabbitMQ queue that contains URL and header info like source language and target.
-- The translation processing ( mimic processing pod ) consumes the message and download file from MinIO and translate it and then upload it to MinIO and get a URL.
-- Then publish the translated file URL to the queue.
-- Our API consumes the message that contains URL to the translated file and download it and write it to the HTTP response.
+- User post request with pdf file to k8-go-api.
+- The k8-go-api endpoint uploads the file to MinIO and returns a URL.
+- The endpoint publishes a message to RabbitMQ queue that contains Minio Pre-signed URL .
+- The k8-go-echo ( mimic processing pod ) consumes the message and download pdf file from MinIO and add watermark to it and then upload it to MinIO and get a URL.
+- The k8-go-echo Then publish the processed pdf file URL to the queue.
+- k8-go-api consumes the message that contains URL to the processed pdf file and download it and write it to the HTTP response.
+
+
+## Info 
+- only the rebuildfile enpoint working , the other still under development
+- the docker build have some issue we are working on
 
 ## Build
 
@@ -47,6 +53,23 @@ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-manag
 docker run -p 9000:9000 minio/minio server /data
 
 ./server
+
+
+```
+
+## k8-go-echo Build
+
+Clone the repo then
+
+```
+cd k8-go-echo
+go build
+
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+docker run -p 9000:9000 minio/minio server /data
+
+./k8-go-echo
+
 ```
 
 - For quick start using docker to run containers for RabbitMQ and MinIO.
