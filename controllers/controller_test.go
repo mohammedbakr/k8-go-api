@@ -46,48 +46,6 @@ const (
 		  "ReviewComments": 1
 		}
 	}`
-
-	mcontentManagementFlagJSON = `{
-		"PdfContentManagement": {
-		  "Metadata": 1,
-		  "InternalHyperlinks": 1,
-		  "ExternalHyperlinks": 1,
-		  "EmbeddedFiles": 1,
-		  "EmbeddedImages": 1,
-		  "Javascript": 1,
-		  "Acroform": 1,
-		  "ActionsAl": 1     
-		},
-		"ExcelContentManagement": {
-		  "Metadata": 1,
-		  "InternalHyperlinks": 1,
-		  "ExternalHyperlinks": 1,
-		  "EmbeddedFiles": 1,
-		  "EmbeddedImages": 1,
-		  "DynamicDataExchange": 1,
-		  "Macros": 1,
-		  "ReviewComments": 1
-		},
-		"PowerPointContentManagement": {
-		  "Metadata": 1,
-		  "InternalHyperlinks": 1,
-		  "ExternalHyperlinks": 1,
-		  "EmbeddedFiles": 1,
-		  "EmbeddedImages": 1,
-		  "Macros": 1,
-		  "ReviewComments": A
-		},
-		"WordContentManagement": {
-		  "Metadata": 1,
-		  "InternalHyperlinks": 1,
-		  "ExternalHyperlinks": 1,
-		  "EmbeddedFiles": 1,
-		  "EmbeddedImages": 1,
-		  "DynamicDataExchange": 1,
-		  "Macros": 1,
-		  "ReviewComments": 1
-		}
-	}`
 )
 
 const (
@@ -96,38 +54,25 @@ const (
 	ZipFileName    = "file.zip"
 )
 
-//ignore enpoint tests for the moment until we restructure them to itegration tests
 func TestParsecontentManagementFlagJSON(t *testing.T) {
-}
-
-/*
-func TestParsecontentManagementFlagJSON(t *testing.T) {
-
-	njson := []byte(contentManagementFlagJSON)
-	ejson := []byte{}
-	mjson := []byte(mcontentManagementFlagJSON)
-
-	notnil := func(i error) bool {
-		if i != nil {
-			return true
-		}
-		return false
-	}
-
 	var tests = []struct {
-		c  []byte
-		er bool
+		content string
+		err     bool
 	}{
-		{njson, notnil(nil)},
-		{ejson, notnil(errors.New(""))},
-		{mjson, notnil(errors.New(""))},
+		{contentManagementFlagJSON, false},
+		{"", true},
 	}
 
 	for _, test := range tests {
-		if _, err := parseContentManagementFlagJSON(test.c); notnil(err) != test.er {
+		if _, err := parseContentManagementFlagJSON(test.content); checkError(err) != test.err {
 			t.Errorf("Test Failed: Error {%s} ", err)
-
 		}
 	}
 }
-*/
+
+func checkError(i error) bool {
+	if i != nil {
+		return true
+	}
+	return false
+}
