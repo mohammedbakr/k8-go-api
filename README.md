@@ -34,43 +34,12 @@
 - k8-go-api consumes the message that contains URL to the processed pdf file and download it and write it to the HTTP response.
 
 
-## Info 
+## Info
+
 - only the rebuildfile enpoint working , the other still under development
 - the docker build have some issue we are working on
 
 ## Build
-
-- Clone the repo.
-- Rename/copy .env.example file to .env
-- Modify .env file according to your needs.
-- Open the terminal in your current directory then run:
-
-```
-cd k8-go-api
-go build -o server ./cmd
-
-docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-docker run -p 9000:9000 minio/minio server /data
-
-./server
-
-
-```
-
-## k8-go-echo Build
-
-Clone the repo then
-
-```
-cd k8-go-echo
-go build
-
-docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-docker run -p 9000:9000 minio/minio server /data
-
-./k8-go-echo
-
-```
 
 - For quick start using docker to run containers for RabbitMQ and MinIO.
 - Run Standalone MinIO on Docker.
@@ -83,10 +52,20 @@ docker run -d -p 9000:9000 -e "MINIO_ROOT_USER=<minio_root_user_name>" -e "MINIO
 
 ```
 docker run -d --hostname <host_name> --name <container_name> -p 15672:15672 -p 5672:5672 rabbitmq:3-management
-
 ```
 
-The server will start at:
+- Clone the repo.
+- Rename/copy .env.example file to .env
+- Modify .env file according to your needs.
+- Open the terminal in your current directory then run:
+
+```
+cd k8-go-api
+go build -o server ./cmd
+./server
+```
+
+- The server will start at:
 
 - Local: http://localhost:8100
 
@@ -100,6 +79,17 @@ docker run -it -p 8100:8100 k8-go-api
 ## Test
 
 For testing, run `go test ./...`
+
+## k8-go-echo 
+## Build
+
+- Clone [k8-go-echo](https://github.com/k8-proxy/k8-go-echo) then run:
+
+```
+cd k8-go-echo
+go build
+./k8-go-echo
+```
 
 ## End points:
 
