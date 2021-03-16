@@ -16,6 +16,9 @@
     <a href="https://opensource.org/licenses/Apache-2.0">
         <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="Apache License, Version 2.0">
     </a>
+    <a href="https://github.com/k8-proxy/k8-go-api/releases/latest">
+        <img src="https://img.shields.io/github/release/k8-proxy/k8-go-api.svg?style=flat"/>
+    </a>
 </p>
 
 # k8-go-api
