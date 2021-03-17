@@ -31,7 +31,7 @@ func jsonreqbuild(flag bool) string {
 
 	js.Request.FileName = "filename"
 
-	js.Request.ContentManagementFlags, err = parseContentManagementFlagJSON([]byte(contentManagementFlagJSON))
+	js.Request.ContentManagementFlags, err = parseContentManagementFlagJSON(contentManagementFlagJSON)
 	if err != nil {
 		log.Println("unmarshal", err)
 		return ""
